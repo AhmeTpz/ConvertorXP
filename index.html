@@ -1,35 +1,154 @@
 <!doctype html>
-<html lang="tr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>ConvertorXP — kişisel dosya masaüstün</title><link rel="stylesheet" href="style.css"></head>
-<body>
-<main id="desktop" aria-label="Dosya masaüstü">
-<header class="desktop-header"><div class="brand"><img class="brand-mark" src="logo.png" alt=""><div>ConvertorXP<small>Kişisel dosya masaüstün</small></div></div><span class="privacy">● Dosyaların bu cihazda kalır</span></header>
-<section class="welcome" id="welcome"><div class="eyebrow">ESKİ BİR HİS. YENİ BİR ARAÇ KUTUSU.</div><h1>Dosyalarını getir.<br>Gerisini sağ tıkla.</h1><p>Dönüştür, boyutlandır, birleştir.<br>Hepsi senin küçük masaüstünde.</p><button class="xp-button primary" id="uploadHero">＋ Dosya yükle</button><span class="hint">veya dosyalarını buraya sürükle</span><div class="welcome-note">JPG · PNG · WEBP · BMP · AVIF <span>GIF / ICO önizlenir. AVIF desteği tarayıcıya bağlıdır.</span></div></section>
-<section id="files" class="files" aria-label="Dosyalar"></section>
-<aside class="desktop-guide"><b>Küçük bir hatırlatma</b><p>Çift tıkla aç; sağ tıkla araçlarını keşfet.<br>Birlikte işlem yapmak için birkaçını seç.</p><span>Telefonda dosyaya dokunman yeterli.</span></aside>
-<div id="dropOverlay">Dosyalarını masaüstüne bırak <span>Birden fazla dosya seçebilirsin</span></div>
-</main>
-<footer class="taskbar"><button id="start" class="start" aria-expanded="false" aria-controls="startMenu"><img src="logo.png" alt=""> başlat</button><button id="upload" class="task-button">📁 Dosya yükle</button><button id="selection" class="task-button">0 dosya seçili</button><div id="windowTasks" class="window-tasks" aria-label="Açık pencereler"></div><div class="tray"><span>◈ Yerel çalışma</span><time id="clock"></time></div></footer>
-<section id="startMenu" class="start-menu" aria-label="Başlat menüsü" hidden>
-<div class="start-profile"><img src="logo.png" alt=""><strong>ConvertorXP</strong></div>
-<div class="start-columns"><div class="start-programs">
-<button data-start="upload"><span class="xp-icon folder-icon"></span><span><b>Dosya yükle</b><small>Masaüstüne dosya ekle</small></span></button>
-<div class="start-separator"></div>
-<button data-start="convert"><span class="xp-icon picture-icon"></span><span><b>Görsel dönüştürücü</b><small>PNG, JPG ve WebP</small></span></button>
-<button data-start="resize"><span class="xp-icon picture-icon"></span><span>Boyutlandır</span></button>
-<button data-start="rotate"><span class="xp-icon picture-icon"></span><span>Görselleri döndür</span></button>
-<button data-start="merge"><span class="xp-icon folder-icon"></span><span>Görselleri birleştir</span></button>
-<div class="start-separator"></div><p class="start-help">İşlem yapmak için önce masaüstündeki dosyalarını seç.</p>
-</div><div class="start-places">
-<button data-start="desktop"><span class="xp-icon folder-icon"></span><b>Dosyalarım</b></button>
-<button data-start="select"><span class="xp-icon folder-icon"></span><b>Tüm dosyaları seç</b></button>
-<div class="start-separator"></div>
-<button data-start="info"><span class="small-system-icon">ⓘ</span>Dosya özellikleri</button>
-<button data-start="help"><span class="small-system-icon">?</span>Yardım ve destek</button>
-<p class="local-note">Dosyaların bu cihazda işlenir.<br><br>Sayfayı yenilemeden önce çıktılarını indir.</p>
-</div></div><div class="start-bottom"><span>ConvertorXP · Yerel çalışma</span><button data-start="close">Menüyü kapat <span>❯</span></button></div>
-</section>
-<input type="file" id="fileInput" multiple hidden>
-<nav id="contextMenu" class="context-menu" aria-label="Dosya işlemleri" hidden></nav>
-<dialog id="window"><form id="operationForm"><div class="titlebar"><span id="windowTitle"></span><button type="button" id="closeWindow" aria-label="Pencereyi kapat">×</button></div><div id="windowBody" class="window-body"></div><div class="window-footer"><button type="button" id="cancel" class="xp-button">Vazgeç</button><button id="execute" class="xp-button primary" type="submit">Uygula</button></div></form></dialog>
-<div id="toast" role="status" hidden></div>
-<script type="module" src="app.js"></script></body></html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ConvertorXP — kişisel dosya masaüstün</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main id="desktop" aria-label="Dosya masaüstü">
+      <header class="desktop-header">
+        <div class="brand">
+          <img class="brand-mark" src="logo.png" alt="" />
+          <div>ConvertorXP<small>Kişisel dosya masaüstün</small></div>
+        </div>
+        <span class="privacy">● Dosyaların bu cihazda kalır</span>
+      </header>
+      <section class="welcome" id="welcome">
+        <div class="eyebrow">ESKİ BİR HİS. YENİ BİR ARAÇ KUTUSU.</div>
+        <h1>Dosyalarını getir.<br />Gerisini sağ tıkla.</h1>
+        <p>
+          Dönüştür, boyutlandır, birleştir.<br />Hepsi senin küçük masaüstünde.
+        </p>
+        <button class="xp-button primary" id="uploadHero">＋ Dosya yükle</button
+        ><span class="hint">veya dosyalarını buraya sürükle</span>
+        <div class="welcome-note">
+          JPG · PNG · WEBP · BMP · AVIF
+          <span>GIF / ICO önizlenir. AVIF desteği tarayıcıya bağlıdır.</span>
+        </div>
+      </section>
+      <section id="files" class="files" aria-label="Dosyalar"></section>
+      <aside class="desktop-guide">
+        <b>Küçük bir hatırlatma</b>
+        <p>
+          Çift tıkla aç; sağ tıkla araçlarını keşfet.<br />Birlikte işlem yapmak
+          için birkaçını seç.
+        </p>
+        <span>Telefonda dosyaya dokunman yeterli.</span>
+      </aside>
+      <div id="dropOverlay">
+        Dosyalarını masaüstüne bırak
+        <span>Birden fazla dosya seçebilirsin</span>
+      </div>
+    </main>
+    <footer class="taskbar">
+      <button
+        id="start"
+        class="start"
+        aria-expanded="false"
+        aria-controls="startMenu"
+      >
+        <img src="logo.png" alt="" /> başlat</button
+      ><button id="upload" class="task-button">📁 Dosya yükle</button
+      ><button id="selection" class="task-button">0 dosya seçili</button>
+      <div
+        id="windowTasks"
+        class="window-tasks"
+        aria-label="Açık pencereler"
+      ></div>
+      <div class="tray">
+        <span>◈ Yerel çalışma</span><time id="clock"></time>
+      </div>
+    </footer>
+    <section
+      id="startMenu"
+      class="start-menu"
+      aria-label="Başlat menüsü"
+      hidden
+    >
+      <div class="start-profile">
+        <img src="logo.png" alt="" /><strong>ConvertorXP</strong>
+      </div>
+      <div class="start-columns">
+        <div class="start-programs">
+          <button data-start="upload">
+            <span class="xp-icon folder-icon"></span
+            ><span><b>Dosya yükle</b><small>Masaüstüne dosya ekle</small></span>
+          </button>
+          <div class="start-separator"></div>
+          <button data-start="convert">
+            <span class="xp-icon picture-icon"></span
+            ><span
+              ><b>Görsel dönüştürücü</b><small>PNG, JPG ve WebP</small></span
+            >
+          </button>
+          <button data-start="resize">
+            <span class="xp-icon picture-icon"></span><span>Boyutlandır</span>
+          </button>
+          <button data-start="rotate">
+            <span class="xp-icon picture-icon"></span
+            ><span>Görselleri döndür</span>
+          </button>
+          <button data-start="merge">
+            <span class="xp-icon folder-icon"></span
+            ><span>Görselleri birleştir</span>
+          </button>
+          <div class="start-separator"></div>
+          <p class="start-help">
+            İşlem yapmak için önce masaüstündeki dosyalarını seç.
+          </p>
+        </div>
+        <div class="start-places">
+          <button data-start="desktop">
+            <span class="xp-icon folder-icon"></span><b>Dosyalarım</b>
+          </button>
+          <button data-start="select">
+            <span class="xp-icon folder-icon"></span><b>Tüm dosyaları seç</b>
+          </button>
+          <div class="start-separator"></div>
+          <button data-start="info">
+            <span class="small-system-icon">ⓘ</span>Dosya özellikleri
+          </button>
+          <button data-start="help">
+            <span class="small-system-icon">?</span>Yardım ve destek
+          </button>
+          <p class="local-note">
+            Dosyaların bu cihazda işlenir.<br /><br />Sayfayı yenilemeden önce
+            çıktılarını indir.
+          </p>
+        </div>
+      </div>
+      <div class="start-bottom">
+        <span>ConvertorXP · Yerel çalışma</span
+        ><button data-start="close">Menüyü kapat <span>❯</span></button>
+      </div>
+    </section>
+    <input type="file" id="fileInput" multiple hidden />
+    <nav
+      id="contextMenu"
+      class="context-menu"
+      aria-label="Dosya işlemleri"
+      hidden
+    ></nav>
+    <dialog id="window">
+      <form id="operationForm">
+        <div class="titlebar">
+          <span id="windowTitle"></span
+          ><button type="button" id="closeWindow" aria-label="Pencereyi kapat">
+            ×
+          </button>
+        </div>
+        <div id="windowBody" class="window-body"></div>
+        <div class="window-footer">
+          <button type="button" id="cancel" class="xp-button">Vazgeç</button
+          ><button id="execute" class="xp-button primary" type="submit">
+            Uygula
+          </button>
+        </div>
+      </form>
+    </dialog>
+    <div id="toast" role="status" hidden></div>
+    <script type="module" src="app.js"></script>
+  </body>
+</html>

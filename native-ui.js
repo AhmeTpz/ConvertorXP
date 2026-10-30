@@ -432,7 +432,12 @@ export async function mountNativePDF(host, entry, notify) {
     useSystemFonts: true,
   });
   let doc;
-  try {doc=await task.promise;} catch(error){await task.destroy();throw error;}
+  try {
+    doc = await task.promise;
+  } catch (error) {
+    await task.destroy();
+    throw error;
+  }
   let page = 1,
     disposed = false,
     rendering = false;

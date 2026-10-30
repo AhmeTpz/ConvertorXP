@@ -1,5 +1,124 @@
-export function splitName(name){const dot=name.lastIndexOf('.');return dot>0?{stem:name.slice(0,dot),extension:name.slice(dot)}:{stem:name,extension:''};}
-export function renamedName(oldName,stem,names=[]){stem=stem.trim().normalize('NFC');if(!stem||/[<>:"/\\|?*\u0000-\u001f]/.test(stem)||/[. ]$/.test(stem)||/^(con|prn|aux|nul|com[1-9]|lpt[1-9])(?:\.|$)/i.test(stem))throw new Error('Geçerli bir dosya adı yaz. Özel karakterler ve ayrılmış adlar kullanılamaz.');const result=stem+splitName(oldName).extension;if(result.length>200)throw new Error('Dosya adı en fazla 200 karakter olabilir.');if(names.some(n=>n.normalize('NFC').toLocaleLowerCase('tr')===result.toLocaleLowerCase('tr')))throw new Error('Bu adda bir dosya zaten var. Başka bir ad seç.');return result;}
-export function copyName(name,names){const {stem,extension}=splitName(name);let i=1,result;do{result=`${stem} - Kopya${i===1?'':` (${i})`}${extension}`;i++;}while(names.includes(result));return result;}
-export function detectImage(bytes){const text=(start,len)=>String.fromCharCode(...bytes.subarray(start,start+len));const view=new DataView(bytes.buffer,bytes.byteOffset,bytes.byteLength);if(bytes.length>=8&&bytes[0]===137&&text(1,3)==='PNG'){let animated=false;for(let p=8;p+12<=bytes.length;){const len=view.getUint32(p);if(p+12+len>bytes.length)break;const chunk=text(p+4,4);if(chunk==='acTL')animated=true;p+=len+12;}return {type:'image/png',previewOnly:animated};}if(bytes[0]===255&&bytes[1]===216&&bytes[2]===255)return {type:'image/jpeg'};if(text(0,4)==='RIFF'&&text(8,4)==='WEBP'){let animated=false;for(let p=12;p+8<=bytes.length;){const len=view.getUint32(p+4,true);if(text(p,4)==='ANIM')animated=true;p+=8+len+(len%2);}return {type:'image/webp',previewOnly:animated};}if(text(0,2)==='BM')return {type:'image/bmp'};if(['GIF87a','GIF89a'].includes(text(0,6)))return {type:'image/gif',previewOnly:true};if(bytes.length>=6&&bytes[0]===0&&bytes[1]===0&&bytes[2]===1&&bytes[3]===0)return {type:'image/x-icon',previewOnly:true};if(bytes.length>=16&&text(4,4)==='ftyp'){const length=Math.min(view.getUint32(0),bytes.length);const brands=[text(8,4)];for(let i=16;i+4<=length;i+=4)brands.push(text(i,4));if(brands.includes('avif')||brands.includes('avis'))return {type:'image/avif',previewOnly:brands.includes('avis')};}return null;}
-export async function inspectImage(file){const bytes=new Uint8Array(await file.arrayBuffer());const detected=detectImage(bytes);if(!detected)return {reason:'Bu dosya türü için araçlar henüz hazır değil.'};let bitmap;try{bitmap=await createImageBitmap(new Blob([bytes],{type:detected.type}));if(bitmap.width*bitmap.height>24000000||bitmap.width>16000||bitmap.height>16000)return {reason:'Görsel güvenli işlem sınırını aşıyor (24 MP / 16000 px).'};return {image:!detected.previewOnly,previewImage:true,viewer:detected.previewOnly?'image-preview':'image',width:bitmap.width,height:bitmap.height,type:detected.type,reason:detected.previewOnly?'Bu biçim önizlenebilir. Animasyonu veya simge varyantlarını kaybetmemek için düzenleme ve dönüşüm kapalı.':undefined};}catch{return {reason:'Görsel çözümlenemedi; dosya bozuk veya bu tarayıcıda desteklenmiyor olabilir.'};}finally{bitmap?.close();}}
+export function splitName(name) {
+  const dot = name.lastIndexOf(".");
+  return dot > 0
+    ? { stem: name.slice(0, dot), extension: name.slice(dot) }
+    : { stem: name, extension: "" };
+}
+export function renamedName(oldName, stem, names = []) {
+  stem = stem.trim().normalize("NFC");
+  if (
+    !stem ||
+    /[<>:"/\\|?*\u0000-\u001f]/.test(stem) ||
+    /[. ]$/.test(stem) ||
+    /^(con|prn|aux|nul|com[1-9]|lpt[1-9])(?:\.|$)/i.test(stem)
+  )
+    throw new Error(
+      "Geçerli bir dosya adı yaz. Özel karakterler ve ayrılmış adlar kullanılamaz.",
+    );
+  const result = stem + splitName(oldName).extension;
+  if (result.length > 200)
+    throw new Error("Dosya adı en fazla 200 karakter olabilir.");
+  if (
+    names.some(
+      (n) =>
+        n.normalize("NFC").toLocaleLowerCase("tr") ===
+        result.toLocaleLowerCase("tr"),
+    )
+  )
+    throw new Error("Bu adda bir dosya zaten var. Başka bir ad seç.");
+  return result;
+}
+export function copyName(name, names) {
+  const { stem, extension } = splitName(name);
+  let i = 1,
+    result;
+  do {
+    result = `${stem} - Kopya${i === 1 ? "" : ` (${i})`}${extension}`;
+    i++;
+  } while (names.includes(result));
+  return result;
+}
+export function detectImage(bytes) {
+  const text = (start, len) =>
+    String.fromCharCode(...bytes.subarray(start, start + len));
+  const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+  if (bytes.length >= 8 && bytes[0] === 137 && text(1, 3) === "PNG") {
+    let animated = false;
+    for (let p = 8; p + 12 <= bytes.length;) {
+      const len = view.getUint32(p);
+      if (p + 12 + len > bytes.length) break;
+      const chunk = text(p + 4, 4);
+      if (chunk === "acTL") animated = true;
+      p += len + 12;
+    }
+    return { type: "image/png", previewOnly: animated };
+  }
+  if (bytes[0] === 255 && bytes[1] === 216 && bytes[2] === 255)
+    return { type: "image/jpeg" };
+  if (text(0, 4) === "RIFF" && text(8, 4) === "WEBP") {
+    let animated = false;
+    for (let p = 12; p + 8 <= bytes.length;) {
+      const len = view.getUint32(p + 4, true);
+      if (text(p, 4) === "ANIM") animated = true;
+      p += 8 + len + (len % 2);
+    }
+    return { type: "image/webp", previewOnly: animated };
+  }
+  if (text(0, 2) === "BM") return { type: "image/bmp" };
+  if (["GIF87a", "GIF89a"].includes(text(0, 6)))
+    return { type: "image/gif", previewOnly: true };
+  if (
+    bytes.length >= 6 &&
+    bytes[0] === 0 &&
+    bytes[1] === 0 &&
+    bytes[2] === 1 &&
+    bytes[3] === 0
+  )
+    return { type: "image/x-icon", previewOnly: true };
+  if (bytes.length >= 16 && text(4, 4) === "ftyp") {
+    const length = Math.min(view.getUint32(0), bytes.length);
+    const brands = [text(8, 4)];
+    for (let i = 16; i + 4 <= length; i += 4) brands.push(text(i, 4));
+    if (brands.includes("avif") || brands.includes("avis"))
+      return { type: "image/avif", previewOnly: brands.includes("avis") };
+  }
+  return null;
+}
+export async function inspectImage(file) {
+  const bytes = new Uint8Array(await file.arrayBuffer());
+  const detected = detectImage(bytes);
+  if (!detected)
+    return { reason: "Bu dosya türü için araçlar henüz hazır değil." };
+  let bitmap;
+  try {
+    bitmap = await createImageBitmap(
+      new Blob([bytes], { type: detected.type }),
+    );
+    if (
+      bitmap.width * bitmap.height > 24000000 ||
+      bitmap.width > 16000 ||
+      bitmap.height > 16000
+    )
+      return {
+        reason: "Görsel güvenli işlem sınırını aşıyor (24 MP / 16000 px).",
+      };
+    return {
+      image: !detected.previewOnly,
+      previewImage: true,
+      viewer: detected.previewOnly ? "image-preview" : "image",
+      width: bitmap.width,
+      height: bitmap.height,
+      type: detected.type,
+      reason: detected.previewOnly
+        ? "Bu biçim önizlenebilir. Animasyonu veya simge varyantlarını kaybetmemek için düzenleme ve dönüşüm kapalı."
+        : undefined,
+    };
+  } catch {
+    return {
+      reason:
+        "Görsel çözümlenemedi; dosya bozuk veya bu tarayıcıda desteklenmiyor olabilir.",
+    };
+  } finally {
+    bitmap?.close();
+  }
+}

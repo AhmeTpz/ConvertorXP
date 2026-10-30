@@ -175,7 +175,7 @@ export function createConversions({
       });
     }
     record.pdfHost.replaceChildren();
-    const pane=element('div',record.pdfHost);
+    const pane = element("div", record.pdfHost);
     const cleanup = await mountPDF(pane, entry, notify);
     if (record.closed || record.pdfEpoch !== epoch) cleanup();
     else record.pdfDispose = cleanup;

@@ -1,0 +1,8 @@
+node_modules/
+dist/
+release/
+resources/
+.cxp-*/
+tests/fixtures/
+package-lock.json
+*.md

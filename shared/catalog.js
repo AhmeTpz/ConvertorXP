@@ -213,16 +213,36 @@ for (const [id, label, fields, multi] of pdfOps)
     !!multi,
     "İmzalar geçersizleşebilir. Metin eklemek mevcut içeriği silmez; sansür değildir.",
   );
-add("pdf.create", "Görsellerden PDF", "PDF", images, "image", [
-  s('paper','Sayfa',['A4','A5','Letter','image']),
-  s('orientation','Yön',['auto','portrait','landscape']),
-  n('margin','Kenar boşluğu (mm)',10,0,50),
-  s('output','Dosyalar',['combined','separate']),
-], true);
-add('office.pdf','PDF’ye dönüştür','Belge',['doc','docx','odt','rtf','ppt','pptx','odp','xls','xlsx','ods'],'office',[s('format','Çıktı',['pdf'])]);
-for (const id of ['pdf.create','office.pdf']) {
-  const op=operations.find(o=>o.id===id);
-  Object.assign(op,{action:op.label,platforms:['desktop'],component:op.engine,panel:'pdf-conversion'});
+add(
+  "pdf.create",
+  "Görsellerden PDF",
+  "PDF",
+  images,
+  "image",
+  [
+    s("paper", "Sayfa", ["A4", "A5", "Letter", "image"]),
+    s("orientation", "Yön", ["auto", "portrait", "landscape"]),
+    n("margin", "Kenar boşluğu (mm)", 10, 0, 50),
+    s("output", "Dosyalar", ["combined", "separate"]),
+  ],
+  true,
+);
+add(
+  "office.pdf",
+  "PDF’ye dönüştür",
+  "Belge",
+  ["doc", "docx", "odt", "rtf", "ppt", "pptx", "odp", "xls", "xlsx", "ods"],
+  "office",
+  [s("format", "Çıktı", ["pdf"])],
+);
+for (const id of ["pdf.create", "office.pdf"]) {
+  const op = operations.find((o) => o.id === id);
+  Object.assign(op, {
+    action: op.label,
+    platforms: ["desktop"],
+    component: op.engine,
+    panel: "pdf-conversion",
+  });
 }
 const mf = s("format", "Çıktı", [
   "mp4",

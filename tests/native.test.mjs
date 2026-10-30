@@ -96,35 +96,72 @@ test(
     assert.equal(imgs.length, 1);
   },
 );
-test("PDF form discovery and password validation", { skip: !engines.qpdf }, async () => {
-  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "cxp-pdf-password-"));
-  const source = path.join(dir, "form.pdf");
-  const locked = path.join(dir, "locked.pdf");
-  const doc = await PDFDocument.create();
-  const page = doc.addPage();
-  doc.getForm().createTextField("adSoyad").addToPage(page);
-  await fs.writeFile(source, await doc.save());
-  const [fields] = await job("pdf.fields", [source]);
-  assert.deepEqual(JSON.parse(await fs.readFile(fields, "utf8")), [{ name: "adSoyad", type: "PDFTextField" }]);
-  await run(engines.qpdf, ["--encrypt", "test-password", "owner-password", "256", "--", source, locked]);
-  await assert.rejects(job("pdf.unlock", [locked], { password: "wrong-password" }));
-  const [unlocked] = await job("pdf.unlock", [locked], { password: "test-password" });
-  assert.equal((await PDFDocument.load(await fs.readFile(unlocked))).getPageCount(), 1);
-});
+test(
+  "PDF form discovery and password validation",
+  { skip: !engines.qpdf },
+  async () => {
+    const dir = await fs.mkdtemp(path.join(os.tmpdir(), "cxp-pdf-password-"));
+    const source = path.join(dir, "form.pdf");
+    const locked = path.join(dir, "locked.pdf");
+    const doc = await PDFDocument.create();
+    const page = doc.addPage();
+    doc.getForm().createTextField("adSoyad").addToPage(page);
+    await fs.writeFile(source, await doc.save());
+    const [fields] = await job("pdf.fields", [source]);
+    assert.deepEqual(JSON.parse(await fs.readFile(fields, "utf8")), [
+      { name: "adSoyad", type: "PDFTextField" },
+    ]);
+    await run(engines.qpdf, [
+      "--encrypt",
+      "test-password",
+      "owner-password",
+      "256",
+      "--",
+      source,
+      locked,
+    ]);
+    await assert.rejects(
+      job("pdf.unlock", [locked], { password: "wrong-password" }),
+    );
+    const [unlocked] = await job("pdf.unlock", [locked], {
+      password: "test-password",
+    });
+    assert.equal(
+      (await PDFDocument.load(await fs.readFile(unlocked))).getPageCount(),
+      1,
+    );
+  },
+);
 
-test('PDF page layout, separate outputs and animated input rejection', {skip:!engines.image},async()=>{
-  const [combined]=await job('pdf.create',[sample,sample],{paper:'Letter',orientation:'portrait',margin:12});
-  const doc=await PDFDocument.load(await fs.readFile(combined));
-  assert.equal(doc.getPageCount(),2);
-  assert.deepEqual(doc.getPage(0).getSize(),{width:612,height:792});
-  const separate=await job('pdf.create',[sample,sample],{paper:'image',margin:0,output:'separate'});
-  assert.equal(separate.length,2);
-  for(const file of separate){const d=await PDFDocument.load(await fs.readFile(file));assert.equal(d.getPageCount(),1);assert.deepEqual(d.getPage(0).getSize(),{width:240,height:180});}
-  const dir=await fs.mkdtemp(path.join(os.tmpdir(),'cxp-animated-pdf-'));
-  const gif=path.join(dir,'two.gif');
-  await run(engines.image,[sample,sample,'-delay','10',gif]);
-  await assert.rejects(job('pdf.create',[gif]));
-});
+test(
+  "PDF page layout, separate outputs and animated input rejection",
+  { skip: !engines.image },
+  async () => {
+    const [combined] = await job("pdf.create", [sample, sample], {
+      paper: "Letter",
+      orientation: "portrait",
+      margin: 12,
+    });
+    const doc = await PDFDocument.load(await fs.readFile(combined));
+    assert.equal(doc.getPageCount(), 2);
+    assert.deepEqual(doc.getPage(0).getSize(), { width: 612, height: 792 });
+    const separate = await job("pdf.create", [sample, sample], {
+      paper: "image",
+      margin: 0,
+      output: "separate",
+    });
+    assert.equal(separate.length, 2);
+    for (const file of separate) {
+      const d = await PDFDocument.load(await fs.readFile(file));
+      assert.equal(d.getPageCount(), 1);
+      assert.deepEqual(d.getPage(0).getSize(), { width: 240, height: 180 });
+    }
+    const dir = await fs.mkdtemp(path.join(os.tmpdir(), "cxp-animated-pdf-"));
+    const gif = path.join(dir, "two.gif");
+    await run(engines.image, [sample, sample, "-delay", "10", gif]);
+    await assert.rejects(job("pdf.create", [gif]));
+  },
+);
 
 test("JSON and Turkish encodings round trip", async () => {
   const dir = await fs.mkdtemp(path.join(os.tmpdir(), "cxp-text-"));
