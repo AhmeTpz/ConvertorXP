@@ -3,6 +3,7 @@
 // multi-photo collage templates, and lossless non-destructive export.
 
 import { t } from "./i18n.js";
+import { removeColorBackground } from "./bg-remover.js";
 import {
   COLLAGE_TEMPLATES,
   getCollageLayout,
@@ -129,6 +130,7 @@ export async function mountPaintWorkspace(
             <button type="button" data-menu="rotate-cw">↷ 90° Sağa Döndür</button>
             <button type="button" data-menu="flip-h">↔ Yatay Çevir</button>
             <button type="button" data-menu="flip-v">↕ Dikey Çevir</button>
+            <button type="button" data-menu="rembg">🪄 ${t("menu_rembg") || "Arka Planı Kaldır"}</button>
           </div>
         </div>
         <div class="paint-menu-item"><u>K</u>olaj
@@ -291,6 +293,39 @@ export async function mountPaintWorkspace(
           <div class="modal-footer">
             <button type="button" class="xp-button primary" id="btnConfirmSave">💾 Kaydet</button>
             <button type="button" class="xp-button" id="btnCancelSave">Vazgeç</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- XP RemBg Modal Dialog -->
+      <div class="xp-paint-modal-backdrop" id="rembgModal" hidden>
+        <div class="xp-paint-modal">
+          <div class="modal-titlebar">
+            <span>🪄 ${t("rembg_title") || "Arka Planı Kaldır"}</span>
+            <button type="button" class="modal-close" id="rembgClose" aria-label="Kapat">×</button>
+          </div>
+          <div class="modal-body">
+            <p style="margin:0 0 6px; font-size:11px; color:#333;">
+              Zemin rengini otomatik tespit eder ve saydamlaştırır. İnce ayar için toleransı değiştirebilirsiniz:
+            </p>
+            <div class="modal-field">
+              <label for="rembgTolerance">${t("rembg_tolerance") || "Tolerans:"}</label>
+              <div class="quality-wrap">
+                <input type="range" id="rembgTolerance" min="10" max="120" value="35">
+                <output id="rembgTolVal">35</output>
+              </div>
+            </div>
+            <div class="modal-field">
+              <label for="rembgFeather">${t("rembg_feather") || "Yumuşaklık:"}</label>
+              <div class="quality-wrap">
+                <input type="range" id="rembgFeather" min="0" max="8" value="3">
+                <output id="rembgFeatherVal">3 px</output>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="xp-button primary" id="btnApplyRembg">${t("rembg_apply") || "✓ Tuvale Uygula"}</button>
+            <button type="button" class="xp-button" id="btnCancelRembg">Vazgeç</button>
           </div>
         </div>
       </div>
@@ -719,6 +754,43 @@ export async function mountPaintWorkspace(
         .forEach((m) => m.classList.remove("open"));
     });
   });
+
+  // 8.5. Arka Plan Kaldırma (RemBg)
+  const rembgModal = q("#rembgModal");
+  const rembgTolerance = q("#rembgTolerance");
+  const rembgFeather = q("#rembgFeather");
+  const rembgTolVal = q("#rembgTolVal");
+  const rembgFeatherVal = q("#rembgFeatherVal");
+
+  q("[data-menu='rembg']").onclick = () => {
+    rembgModal.hidden = false;
+  };
+  q("#rembgClose").onclick = () => {
+    rembgModal.hidden = true;
+  };
+  q("#btnCancelRembg").onclick = () => {
+    rembgModal.hidden = true;
+  };
+  rembgTolerance.oninput = () => {
+    rembgTolVal.textContent = rembgTolerance.value;
+  };
+  rembgFeather.oninput = () => {
+    rembgFeatherVal.textContent = `${rembgFeather.value} px`;
+  };
+  q("#btnApplyRembg").onclick = () => {
+    saveSnapshot();
+    const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    removeColorBackground(imgData, {
+      tolerance: Number(rembgTolerance.value),
+      feather: Number(rembgFeather.value),
+    });
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.putImageData(imgData, 0, 0);
+    stage.classList.add("transparent-grid");
+    rembgModal.hidden = true;
+    updateCalculatedSize();
+    notify(t("rembg_done") || "✓ Arka plan kaldırıldı.");
+  };
 
   // 9. Save As / Farklı Kaydet Modalı & Kopya Kaydet
   const saveModal = q("#saveModal");

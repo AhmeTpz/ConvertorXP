@@ -99,10 +99,18 @@ Durum: **Doğrulandı**. Doğrulanan sürüm: **0.8.0** (E2E: `tests/e2e/stage4.
 
 ---
 
-## Aşama 5 — Gerekli Ağır Araçlar
-Durum: **Bekliyor**. Hedef sürüm: 0.9.0.
-- [ ] **Yapay Zeka Arka Plan Kaldırma:** BiRefNet-lite / ISNet modelleriyle karşılaştırma testi, tek seferlik bileşen indirme, GPU'suz yerel çalışma.
-- [ ] **Medya araçları:** FFmpeg tabanlı ses/video kesme, sıkıştırma, ses çıkarma.
+## Aşama 5 — Gerekli Ağır Araçlar & Yapay Zeka Arka Plan Kaldırma
+Durum: **Doğrulandı**. Doğrulanan sürüm: **0.9.0** (E2E: `tests/e2e/stage5.e2e.mjs`, Unit: `tests/rembg.test.mjs`).
+- [x] **Akıllı Arka Plan Kaldırma Motoru (`bg-remover.js`):**
+  - Sınır tabanlı BFS akıllı renk/kenar matting algoritması ve Gauss yumuşak kenar geçişi (feathering).
+  - Masaüstü sağ tık menüsünden doğrudan erişim (`🪄 Arka Planı Kaldır` -> `baseName-arka-plansiz.png`).
+  - Paint Stüdyosu entegrasyonu: `Görsel -> Arka Planı Kaldır` ile tuvalde şeffaf damalı zemin (`transparent-grid`) üzerinde düzenlemeye devam edebilme.
+  - Kaynak bütünlüğü: Orijinal fotoğrafın SHA-256 hash'i %100 korunur.
+- [x] **FFmpeg Tabanlı Medya Araçları:**
+  - `✂ Kes (Trim)`: Video/ses dosyalarında başlangıç ve bitiş zamanı belirterek kayıpsız akış kopyalama (`media.trim`).
+  - `🗜 Video Sıkıştır (Compress)`: Discord, WhatsApp, E-posta boyut hedefleriyle video sıkıştırma (`media.resize`).
+  - `🎵 Sesi Ayıkla (Extract Audio)`: Videodan doğrudan MP3, WAV, FLAC, M4A ses ayıklama (`media.audio`).
+  - `🎞 GIF Oluştur`: Palettegen optimize animasyonlu GIF üretimi (`media.gif`).
 
 ---
 

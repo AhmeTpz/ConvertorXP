@@ -219,6 +219,18 @@ export const dict = {
     menu_collage: "🖼 Kolaj Oluştur",
     start_paint: "Paint",
     start_paint_sub: "Resim düzenleyici & kolaj",
+
+    // Stage 5: Background Removal & Media Tools
+    menu_rembg: "🪄  Arka Planı Kaldır",
+    menu_media_trim: "✂  Kes (Trim)",
+    menu_media_compress: "🗜  Video Sıkıştır",
+    menu_media_audio: "🎵  Sesi Ayıkla",
+    rembg_title: "Arka Planı Kaldır",
+    rembg_tolerance: "Tolerans:",
+    rembg_feather: "Yumuşaklık:",
+    rembg_apply: "✓ Tuvale Uygula",
+    rembg_saved_notify: "✓ {name} arka planı kaldırılarak masaüstüne kaydedildi.",
+    rembg_done: "✓ Arka plan kaldırıldı.",
   },
 
   en: {
@@ -436,6 +448,18 @@ export const dict = {
     menu_collage: "🖼 Create Collage",
     start_paint: "Paint",
     start_paint_sub: "Image editor & collage",
+
+    // Stage 5: Background Removal & Media Tools
+    menu_rembg: "🪄  Remove Background",
+    menu_media_trim: "✂  Trim Media",
+    menu_media_compress: "🗜  Compress Video",
+    menu_media_audio: "🎵  Extract Audio",
+    rembg_title: "Remove Background",
+    rembg_tolerance: "Tolerance:",
+    rembg_feather: "Feather:",
+    rembg_apply: "✓ Apply to Canvas",
+    rembg_saved_notify: "✓ {name} saved to desktop with transparent background.",
+    rembg_done: "✓ Background removed.",
   },
 };
 

@@ -2873,3 +2873,11 @@ a:focus-visible {
   justify-content: flex-end;
   gap: 8px;
 }
+
+/* Stage 5: Transparent Checkerboard & Media Tools */
+.xp-paint-stage.transparent-grid {
+  background: repeating-conic-gradient(#ffffff 0% 25%, #d8d8d8 0% 50%) 50% / 16px 16px !important;
+}
+.xp-paint-stage.transparent-grid canvas {
+  background: transparent !important;
+}

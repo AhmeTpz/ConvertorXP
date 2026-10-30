@@ -129,7 +129,31 @@ Bu doküman, ConvertorXP projesinde tamamlanan her aşamanın mimarisini, eklene
 
 ---
 
+## 🪄 Aşama 5 — Akıllı Arka Plan Kaldırma & Medya Araçları (v0.9.0)
+
+**Durum:** Tamamlandı & Doğrulandı.  
+**Doğrulama Testleri:** `tests/rembg.test.mjs` (Unit), `tests/e2e/stage5.e2e.mjs` (E2E), 37/37 Birim Testi (`npm test`), Tüm Aşama 1..5 E2E Testleri (`npm run test:e2e`).
+
+### 1. Neler Geliştirildi?
+- **Akıllı Kenar-Duyarlı Arka Plan Kaldırma Motoru (`bg-remover.js`):**
+  - **Mimari Yaklaşım:** Harici sunuculara veya gigabaytlarca Python/PyTorch yüküne ihtiyaç duymadan, %100 yerel ve istemci tarafında (Client-Side) çalışan optimize mimari kuruldu.
+  - **4-Köşe Renk Tespiti:** Görselin 4 köşesinden arka plan rengi otomatik örneklenir (sol-üst, sağ-üst, sol-alt, sağ-alt) veya kullanıcı isteğine göre tolerans eşiği ayarlanır.
+  - **4-Yönlü BFS Topolojik Sel Doldurma (Flood Fill):** Dış sınırlardan (üst, alt, sol, sağ) içeri doğru BFS kuyruk algoritmasıyla arka plan taranır. Bu sayede nesnenin içindeki kapalı beyaz delikler (örneğin 'O' harfinin veya simidin içi, kıvrılmış kol boşluğu vb.) dış sınırla doğrudan bağlantılı değilse yanlışlıkla silinmez ve nesne formu korunur.
+  - **Yumuşak Gauss Kenar Yumuşatma (Feathering):** Keskin pikselleşmeyi (merdiven efektini) önlemek için mesafeye bağlı çift geçişli kutu Gauss bulanıklığı ile 0..8px aralığında pürüzsüz alfa geçişi oluşturulur.
+  - **Masaüstü Tek Tık Eylemi:** Masaüstündeki herhangi bir görsele sağ tıklandığında doğrudan `🪄 Arka Planı Kaldır` seçeneği çıkar. Orijinal dosyaya asla dokunulmadan anında `<ad>-arka-plansiz.png` üretilir ve sarı balon bildirimi gösterilir.
+  - **Paint Stüdyosu İçi Canlı Entegrasyon (Kullanıcı Kararı 1):**
+    - Paint menüsünden `Görsel -> Arka Planı Kaldır` seçildiğinde XP diyalog penceresi açılır.
+    - Kullanıcı tolerans ve kenar yumuşatma kaydırıcılarını ayarlayıp `Tuvale Uygula` dediğinde mevcut tuvaldeki arka plan şeffaflaştırılır ve arkasında ikonik satranç damalı şeffaflık deseni (`.transparent-grid`) belirir.
+    - Kullanıcı arka planı silinmiş nesne üzerine çizim yapmaya, yazı yazmaya veya doğrudan `PNG/WebP` olarak farklı kaydetmeye devam edebilir.
+- **Hızlı Medya Araçları (FFmpeg Media Tools) (Kullanıcı Kararı 2):**
+  - Masaüstünde video veya ses dosyaları seçildiğinde sağ tık menüsünde:
+    - **`✂ Kes (Trim)`:** Başlangıç zamanı ve süre girilerek kayıpsız akış kopyalama (`-ss`, `-t`) ile milisaniyeler içinde kesme.
+    - **`🗜 Video Sıkıştır`:** Çözünürlük, FPS ve hedef video bitrate (kbps) ile boyutu optimize etme.
+    - **`🎵 Sesi Ayıkla`:** MP4/MKV/WebM videolardan tek tıkla MP3, WAV, FLAC veya M4A ses parçası çıkarma.
+    - **`🎞 GIF Oluştur`:** 12 FPS, Lanczos ölçekleme ve 256 renk paletiyle akıcı GIF üretimi.
+
+---
+
 ## 🔮 Gelecek Aşamalar
 
-- **Aşama 5 (v0.9.0):** Gerekli Ağır Araçlar — Yapay Zeka Arka Plan Kaldırma (On-Device / Sıfır Python WebAssembly & ONNX Modelleri) ve FFmpeg Tabanlı Medya Araçları.
-- **Aşama 6 (v0.10.0):** OCR ve Sınırlı PDF Metin Düzenleme.
+- **Aşama 6 (v0.10.0):** OCR ve Sınırlı PDF Metin Düzenleme (Tesseract.js Türkçe/İngilizce OCR, Aranabilir PDF ve MuPDF redaksiyon/metin değiştirme).

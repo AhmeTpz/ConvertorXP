@@ -1,19 +1,20 @@
 {
   "name": "convertor-xp",
-  "version": "0.8.0",
+  "version": "0.9.0",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "node server.mjs",
     "build": "node build.mjs",
     "format": "prettier --write \"*.{js,mjs,html,css}\" \"native/**/*.{mjs,cjs}\" \"shared/**/*.js\" \"scripts/**/*.mjs\" \"tests/**/*.mjs\"",
-    "check": "node --check app.js && node --check desktop.js && node --check windows.js && node --check viewers.js && node --check editor.js && node --check image-engine.js && node --check file-utils.js && node --check i18n.js && node --check collage-engine.js && node --check paint-workspace.js",
+    "check": "node --check app.js && node --check desktop.js && node --check windows.js && node --check viewers.js && node --check editor.js && node --check image-engine.js && node --check file-utils.js && node --check i18n.js && node --check collage-engine.js && node --check paint-workspace.js && node --check bg-remover.js",
     "test": "node --test tests/*.test.mjs",
     "desktop": "npm run build && electron .",
     "dist:win": "npm run build && npm run licenses && electron-builder --win nsis --x64",
-    "test:e2e": "npm run build && node tests/e2e/stage1.e2e.mjs && node tests/e2e/stage2.e2e.mjs && node tests/e2e/stage3.e2e.mjs && node tests/e2e/stage4.e2e.mjs",
+    "test:e2e": "npm run build && node tests/e2e/stage1.e2e.mjs && node tests/e2e/stage2.e2e.mjs && node tests/e2e/stage3.e2e.mjs && node tests/e2e/stage4.e2e.mjs && node tests/e2e/stage5.e2e.mjs",
     "test:e2e:stage3": "npm run build && node tests/e2e/stage3.e2e.mjs",
     "test:e2e:stage4": "npm run build && node tests/e2e/stage4.e2e.mjs",
+    "test:e2e:stage5": "npm run build && node tests/e2e/stage5.e2e.mjs",
     "test:e2e:exe": "node tests/e2e/stage1.e2e.mjs --exe",
     "check:native": "node scripts/check-native.mjs",
     "test:desktop": "electron scripts/test-desktop.mjs",
@@ -22,6 +23,7 @@
     "prepare:engines": "node scripts/fetch-engines.mjs && node scripts/bundle-engines.mjs"
   },
   "dependencies": {
+    "@imgly/background-removal": "^1.7.0",
     "@napi-rs/canvas": "^1.0.13",
     "@pdf-lib/fontkit": "^1.1.1",
     "@resvg/resvg-js": "^2.6.2",

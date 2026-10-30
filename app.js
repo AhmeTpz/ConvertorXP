@@ -10,6 +10,7 @@ import { createDesktop, cellsFrom } from "./desktop.js";
 import { createWindowManager } from "./windows.js";
 import { mountViewer, viewerType } from "./viewers.js";
 import { mountPaintWorkspace } from "./paint-workspace.js";
+import { removeColorBackground } from "./bg-remover.js";
 import { t, lang, setLanguage, applyStatic } from "./i18n.js";
 const $ = (s) => document.querySelector(s);
 applyStatic();
@@ -157,6 +158,56 @@ function createCollageWindow(items) {
       },
       { collageImages: items },
     ).catch((err) => notify(err.message));
+  }
+}
+
+async function removeDesktopImageBackground(entry) {
+  try {
+    notify(t("processing") || "İşleniyor…");
+    let blob;
+    if (entry.file instanceof File || entry.file instanceof Blob) {
+      blob = entry.file;
+    } else if (entry.url) {
+      blob = await (await fetch(entry.url)).blob();
+    }
+    if (!blob) throw new Error("Görsel yüklenemedi");
+
+    const img = new Image();
+    const url = URL.createObjectURL(blob);
+    await new Promise((res, rej) => {
+      img.onload = res;
+      img.onerror = rej;
+      img.src = url;
+    });
+    URL.revokeObjectURL(url);
+
+    const canvas = document.createElement("canvas");
+    canvas.width = img.width;
+    canvas.height = img.height;
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(img, 0, 0);
+
+    const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    removeColorBackground(imgData, { tolerance: 35, feather: 3 });
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.putImageData(imgData, 0, 0);
+
+    const outBlob = await new Promise((res) => canvas.toBlob(res, "image/png"));
+    const base = entry.name.replace(/\.[^.]+$/, "");
+    const outName = `${base}-arka-plansiz.png`;
+
+    await saveEdited(outBlob, outName, canvas.width, canvas.height);
+    if (showBalloon) {
+      showBalloon({
+        title: t("balloon_done_title") || "İşlem tamamlandı",
+        message:
+          t("rembg_saved_notify", { name: outName }) ||
+          `✓ ${outName} masaüstüne kaydedildi.`,
+      });
+    }
+    notify(`✓ ${outName} masaüstüne kaydedildi.`);
+  } catch (err) {
+    notify(err.message || "Arka plan kaldırma hatası");
   }
 }
 const nativeUI = native
@@ -354,6 +405,14 @@ function menu(x, y) {
   add(t("menu_duplicate"), () => duplicateFiles(list));
   m.append(document.createElement("hr"));
   if (allImages) {
+    if (list.length === 1) {
+      add(
+        t("menu_rembg") || "🪄 Arka Planı Kaldır",
+        () => removeDesktopImageBackground(list[0]),
+        false,
+        "image-rembg",
+      );
+    }
     add(
       t("menu_convert_quality"),
       () => openOperation("convert"),
@@ -417,6 +476,18 @@ function menu(x, y) {
       ].includes(e.ext || e.name.split(".").pop().toLowerCase()),
     );
   if (allMedia && native) {
+    add(
+      t("menu_media_trim") || "✂ Kes (Trim)",
+      () => nativeUI.tools("media.trim"),
+      false,
+      "media-trim",
+    );
+    add(
+      t("menu_media_compress") || "🗜 Video Sıkıştır",
+      () => nativeUI.tools("media.resize"),
+      false,
+      "media-compress",
+    );
     add(
       t("menu_create_gif"),
       () => nativeUI.tools("media.gif"),

@@ -267,6 +267,15 @@ const mediaOps = [
   ],
   ["merge", "Birleştir", [mf], true],
   [
+    "trim",
+    "Video / ses kes",
+    [
+      n("start", "Başlangıç (sn)", 0, 0, 864000),
+      n("duration", "Süre (sn)", 10, 0.1, 864000),
+      s("format", "Çıktı", ["mp4", "mp3", "wav", "mkv", "webm", "m4a"]),
+    ],
+  ],
+  [
     "resize",
     "Video boyut / FPS",
     [
