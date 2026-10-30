@@ -180,6 +180,9 @@ export function createNativeUI({ manager, getSelection, notify, refresh }) {
       choose.append(g);
     }
     r.content.append(choose);
+    if (initialOperation && available.some((o) => o.id === initialOperation))
+      choose.value = initialOperation;
+    choose.onchange = render;
     const form = document.createElement("form");
     r.content.append(form);
     async function render() {
@@ -274,6 +277,26 @@ export function createNativeUI({ manager, getSelection, notify, refresh }) {
         }
         input.value = field.value;
         label.append(input);
+        if (op.id === "image.compress" && field.key === "targetKB") {
+          const presets = document.createElement("div");
+          presets.className = "compress-presets";
+          for (const [presetKB, plabel] of [
+            [200, "200 KB (e-Devlet)"],
+            [500, "500 KB"],
+            [1000, "1 MB"],
+            [2000, "2 MB"],
+          ]) {
+            const pb = document.createElement("button");
+            pb.type = "button";
+            pb.className = "xp-button preset-btn";
+            pb.textContent = plabel;
+            pb.onclick = () => {
+              input.value = presetKB;
+            };
+            presets.append(pb);
+          }
+          label.append(presets);
+        }
         form.append(label);
       }
       if (op.id === "text.edit") {

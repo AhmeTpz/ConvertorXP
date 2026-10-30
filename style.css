@@ -282,7 +282,7 @@ button:disabled {
   font-size: 11px;
 }
 .tray {
-  margin-left: auto;
+  margin-left: 0;
   background: #138fda;
   height: 100%;
   display: flex;
@@ -635,10 +635,12 @@ a:focus-visible {
   border-radius: 2px;
 }
 .tray {
+  margin-left: 0;
   background: linear-gradient(#20a5eb, #1198e4 20%, #1489d9 85%, #0874c5);
   box-shadow: inset 1px 0 #38b9f2;
-  padding: 0 14px;
-  gap: 14px;
+  border-left: 1px solid #0758b1;
+  padding: 0 10px;
+  gap: 8px;
 }
 .context-menu {
   background: #f1f1f1;
@@ -1924,53 +1926,119 @@ a:focus-visible {
   line-height: 12px;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
 }
-.tray-lang {
-  background: #0f58a8;
-  border: 1px solid #38b9f2;
-  box-shadow: inset 1px 1px 0 rgba(0, 0, 0, 0.25);
-  font-weight: bold;
+.taskbar-lang-band {
+  display: inline-flex;
+  align-items: center;
+  height: 100%;
+  margin-left: auto;
+  margin-right: -4px;
+  padding: 0;
+  flex-shrink: 0;
+  position: relative;
+  user-select: none;
 }
-.tray-lang:hover {
-  background: #186ac5;
+.band-gripper {
+  display: inline-block;
+  width: 3px;
+  height: 22px;
+  margin: 0 3px 0 4px;
+  border-left: 1px solid #164ca3;
+  border-right: 1px solid #64a1ff;
 }
-.tray-lang-kbd {
+.taskbar-lang {
+  height: 100%;
+  background: transparent;
+  border: 0;
+  color: #fff;
+  font-family: Tahoma, "Segoe UI", sans-serif;
   font-size: 11px;
-  opacity: 0.9;
+  font-weight: bold;
+  padding: 0 8px;
+  margin: 0;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.75);
+  flex-shrink: 0;
+  outline: none;
+}
+.taskbar-lang:hover,
+.taskbar-lang[aria-expanded="true"] {
+  background: rgba(255, 255, 255, 0.16);
+  box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0.2);
+}
+.taskbar-lang:active {
+  background: rgba(0, 0, 0, 0.2);
+  box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.4);
+}
+.tray-shield {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  cursor: default;
+  user-select: none;
+}
+.tray-shield .shield-svg {
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.35));
 }
 .lang-menu {
   position: fixed;
   z-index: 10005;
-  bottom: 34px;
-  right: 50px;
   background: #fff;
   border: 1px solid #aca899;
-  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.25);
-  padding: 2px;
-  min-width: 190px;
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.35);
+  padding: 2px 0;
+  min-width: 195px;
   font-family: Tahoma, "Segoe UI", sans-serif;
+  font-size: 11px;
 }
 .lang-menu button {
   display: flex;
   align-items: center;
   width: 100%;
-  padding: 4px 8px;
+  padding: 3px 14px 3px 6px;
   border: 0;
   background: transparent;
   color: #000;
   font-size: 11px;
   text-align: left;
   cursor: pointer;
+  user-select: none;
 }
 .lang-menu button .check {
   display: inline-block;
-  width: 18px;
+  width: 20px;
   font-weight: bold;
+  font-size: 11px;
+  color: #000;
+  text-align: center;
 }
 .lang-menu button:hover,
 .lang-menu button:focus-visible {
   background: #316ac5;
   color: #fff;
   outline: none;
+}
+.lang-menu button:hover .check,
+.lang-menu button:focus-visible .check {
+  color: #fff;
+}
+.lang-menu-divider {
+  height: 1px;
+  background: #dcdad5;
+  border-bottom: 1px solid #ffffff;
+  margin: 3px 1px;
+}
+.lang-menu-footer {
+  padding: 3px 14px 3px 26px;
+  color: #808080;
+  font-size: 11px;
+  cursor: default;
+  user-select: none;
 }
 
 /* XP Balloon Tooltip */
@@ -2064,4 +2132,18 @@ a:focus-visible {
 }
 .balloon-actions button:hover {
   color: #002277;
+}
+
+/* Compression Presets */
+.compress-presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 6px 0 10px;
+}
+.compress-presets .preset-btn {
+  font-size: 11px;
+  padding: 2px 7px;
+  min-height: 22px;
+  cursor: pointer;
 }

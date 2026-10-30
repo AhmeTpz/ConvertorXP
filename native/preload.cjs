@@ -25,6 +25,7 @@ contextBridge.exposeInMainWorld("convertorDesktop", {
   retry: (id) => invoke("retry", id),
   installPackage: (id) => invoke("install", id, false),
   importPackage: (id) => invoke("install", id, true),
+  readClipboard: () => invoke("readClipboard"),
   readText: (id, encoding) => invoke("readText", id, encoding),
   onChange: (callback) => {
     const listener = () => callback();

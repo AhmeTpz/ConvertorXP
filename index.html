@@ -92,6 +92,19 @@
         data-i18n-aria="windows_open"
         aria-label="Open windows"
       ></div>
+      <div class="taskbar-lang-band" id="trayLangBand">
+        <span class="band-gripper" aria-hidden="true"></span>
+        <button
+          id="trayLang"
+          class="taskbar-lang"
+          type="button"
+          aria-expanded="false"
+          aria-controls="langMenu"
+          title="Language / Dil"
+        >
+          <span id="trayLangCode">EN</span>
+        </button>
+      </div>
       <div class="tray">
         <button
           id="trayJobs"
@@ -103,17 +116,46 @@
           <span class="tray-gear">⚙</span
           ><span id="trayJobsCount" class="tray-badge">1</span>
         </button>
-        <button
-          id="trayLang"
-          class="tray-item tray-lang"
-          type="button"
-          aria-expanded="false"
-          aria-controls="langMenu"
-          title="Language / Dil"
+        <span
+          id="trayShield"
+          class="tray-item tray-shield"
+          data-i18n-title="tray_shield_title"
+          title="ConvertorXP — 100% On-Device"
         >
-          <span class="tray-lang-kbd">⌨</span
-          ><strong id="trayLangCode">EN</strong>
-        </button>
+          <svg
+            class="shield-svg"
+            viewBox="0 0 16 16"
+            width="15"
+            height="15"
+            aria-hidden="true"
+          >
+            <path
+              d="M8 1 L14 3 V7 C14 11 11 14 8 15 C5 14 2 11 2 7 V3 Z"
+              fill="url(#shieldGrad)"
+              stroke="#1647a0"
+              stroke-width="1"
+            />
+            <path
+              d="M8 3 L12 4.5 V7 C12 10 9.8 12.5 8 13.3 C6.2 12.5 4 10 4 7 V4.5 Z"
+              fill="#22c55e"
+              opacity="0.9"
+            />
+            <path
+              d="M6 7.5 L7.5 9 L10.5 5.5"
+              stroke="#fff"
+              stroke-width="1.6"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              fill="none"
+            />
+            <defs>
+              <linearGradient id="shieldGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#70a2ff" />
+                <stop offset="100%" stop-color="#1647a0" />
+              </linearGradient>
+            </defs>
+          </svg>
+        </span>
         <time id="clock"></time>
       </div>
     </footer>
@@ -145,6 +187,10 @@
       <button type="button" data-lang="tr">
         <span class="check" id="checkTr"></span> Türkçe (Türkiye)
       </button>
+      <div class="lang-menu-divider" aria-hidden="true"></div>
+      <div class="lang-menu-footer" data-i18n="lang_bar_show">
+        Show the Language bar
+      </div>
     </nav>
     <section
       id="startMenu"

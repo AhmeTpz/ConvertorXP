@@ -15,7 +15,7 @@ export const dict = {
     desktop_aria: "Dosya masaüstü",
     files_aria: "Dosyalar",
     start_menu_aria: "Başlat menüsü",
-    version_label: "ConvertorXP v0.5.0",
+    version_label: "ConvertorXP v0.6.0",
 
     // Welcome Screen
     welcome_eyebrow: "ESKİ BİR HİS. YENİ BİR ARAÇ KUTUSU.",
@@ -60,8 +60,13 @@ export const dict = {
 
     // Tray & Balloon
     tray_jobs_tooltip: "{count} işlem sürüyor",
+    tray_shield_title: "ConvertorXP — %100 Yerel (İşlemler cihazınızda kalır)",
+    lang_bar_show: "Dil Çubuğunu Göster",
     balloon_done_title: "İşlem tamamlandı",
     balloon_failed_title: "İşlem tamamlanamadı",
+    balloon_pasted_title: "Görsel yapıştırıldı",
+    balloon_pasted_msg: "{name} masaüstüne eklendi.",
+    pasted_prefix: "Ekran Görüntüsü",
     balloon_open: "Aç",
     balloon_reveal: "Klasörde göster",
 
@@ -82,6 +87,11 @@ export const dict = {
     menu_rename: "✎  Yeniden adlandır   F2",
     menu_duplicate: "▣  Kopyasını oluştur",
     menu_convert_quality: "⇄  Dönüştür / kalite ayarla",
+    menu_compress: "🗜  Hedef boyuta sıkıştır",
+    menu_strip: "🛡  Metadata / EXIF temizle",
+    menu_pdf_images: "🖼  Sayfaları görsele dönüştür",
+    menu_create_gif: "🎞  GIF oluştur",
+    menu_extract_audio: "🎵  Sesi çıkar",
     menu_resize: "⤢  Boyutlandır",
     menu_rotate: "↻  Sağa döndür",
     menu_merge: "▧  Görselleri birleştir",
@@ -173,7 +183,7 @@ export const dict = {
     desktop_aria: "File desktop",
     files_aria: "Files",
     start_menu_aria: "Start menu",
-    version_label: "ConvertorXP v0.5.0",
+    version_label: "ConvertorXP v0.6.0",
 
     // Welcome Screen
     welcome_eyebrow: "CLASSIC FEEL. MODERN TOOLBOX.",
@@ -217,8 +227,14 @@ export const dict = {
 
     // Tray & Balloon
     tray_jobs_tooltip: "{count} operations running",
+    tray_shield_title:
+      "ConvertorXP — 100% On-device (Files never leave this device)",
+    lang_bar_show: "Show the Language bar",
     balloon_done_title: "Operation completed",
     balloon_failed_title: "Operation failed",
+    balloon_pasted_title: "Image pasted",
+    balloon_pasted_msg: "{name} added to desktop.",
+    pasted_prefix: "Screenshot",
     balloon_open: "Open",
     balloon_reveal: "Show in folder",
 
@@ -239,6 +255,11 @@ export const dict = {
     menu_rename: "✎  Rename   F2",
     menu_duplicate: "▣  Make a copy",
     menu_convert_quality: "⇄  Convert / quality",
+    menu_compress: "🗜  Compress to target size",
+    menu_strip: "🛡  Remove EXIF & metadata",
+    menu_pdf_images: "🖼  Export pages as images",
+    menu_create_gif: "🎞  Create GIF",
+    menu_extract_audio: "🎵  Extract audio",
     menu_resize: "⤢  Resize",
     menu_rotate: "↻  Rotate 90° right",
     menu_merge: "▧  Merge images",

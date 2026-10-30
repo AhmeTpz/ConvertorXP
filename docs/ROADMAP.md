@@ -50,13 +50,17 @@ Durum: **Doğrulandı**. Doğrulanan sürüm: **0.5.0** (E2E: `tests/e2e/stage1.
 ---
 
 ## Aşama 2 — Hızlı İşlemler & Pratik Araçlar
-Durum: **Bekliyor**. Hedef sürüm: 0.6.0.
-- [ ] **Görsel format dönüştürme:** HEIC → JPG/PNG, WEBP → PNG/JPG, PNG → ICO, SVG → PNG.
-- [ ] **Görsel sıkıştırma & boyutlandırma:** Hedef dosya boyutu (ör. "200 KB altı") e-Devlet/form gereksinimleri için.
-- [ ] **Panodan yapıştırma (Ctrl+V):** Ekran görüntüsü yapıştırıp doğrudan masaüstünde açma.
-- [ ] **Gizlilik / EXIF temizleme:** Tek tıkla GPS konumu ve kamera metadata silme.
-- [ ] **PDF → Görseller:** PDF sayfalarını JPG/PNG olarak dışa aktarma.
-- [ ] **Video → GIF dönüştürücü:** Hızlı paylaşım için optimize edilmiş paletle GIF üretimi.
+Durum: **Doğrulandı**. Doğrulanan sürüm: **0.6.0** (E2E: `tests/e2e/stage2.e2e.mjs`, Unit: `tests/stage2.test.mjs`).
+- [x] **XP Görev Çubuğu & Dil Çubuğu (Language Bar):**
+  - Dil seçici (`EN` / `TR`) bildirim alanı ayırıcısının hemen solunda, orijinal Windows XP deskband gripper'ı (`band-gripper`) ile yerleştirildi.
+  - Açılan dil menüsü XP görsel kılavuzuna uygun sağa hizalı, onay işareti ve "Show the Language bar" altlığıyla güncellendi.
+  - Bildirim alanında (tray) yerel çalışma güvenlik rozeti (`#trayShield`) ve aktif iş dişlisi (`#trayJobs`) konumlandırıldı.
+- [x] **Görsel format dönüştürme:** HEIC → JPG/PNG, WEBP → PNG/JPG, PNG → ICO (çoklu çözünürlük 256..16 başlığıyla), SVG → PNG.
+- [x] **Görsel sıkıştırma (Hedef KB):** e-Devlet ve formlar için 200 KB, 500 KB, 1 MB, 2 MB hazır presetleri ve kademeli kalite/çözünürlük optimizasyonu ile garanti boyut sınırı (`image.compress`).
+- [x] **Panodan yapıştırma (Ctrl+V):** `readClipboard` IPC ile masaüstüne anında ekran görüntüsü ekleme ve XP sarı balon bildirimi.
+- [x] **Gizlilik / EXIF temizleme:** Tek tıkla GPS konumu ve kamera metadata silme (`image.strip`).
+- [x] **PDF → Görseller:** PDF sayfalarını bağımsız PNG görselleri olarak masaüstüne dışa aktarma (`pdf.images`).
+- [x] **Video → GIF & Ses dönüştürücü:** Hızlı paylaşım için optimize edilmiş paletle GIF üretimi (`media.gif`) ve ses ayıklama (`media.audio`).
 
 ---
 

@@ -296,13 +296,74 @@ function menu(x, y) {
   add(t("menu_duplicate"), () => duplicateFiles(list));
   m.append(document.createElement("hr"));
   if (allImages) {
-    add(t("menu_convert_quality"), () => openOperation("convert"), !allImages);
-    add(t("menu_resize"), () => openOperation("resize"), !allImages);
-    add(t("menu_rotate"), () => openOperation("rotate"), !allImages);
+    add(
+      t("menu_convert_quality"),
+      () => openOperation("convert"),
+      false,
+      "image-convert",
+    );
+    if (native) {
+      add(
+        t("menu_compress"),
+        () => nativeUI.tools("image.compress"),
+        false,
+        "image-compress",
+      );
+      add(
+        t("menu_strip"),
+        () => nativeUI.tools("image.strip"),
+        false,
+        "image-strip",
+      );
+    }
+    add(t("menu_resize"), () => openOperation("resize"), false, "image-resize");
+    add(t("menu_rotate"), () => openOperation("rotate"), false, "image-rotate");
     add(
       t("menu_merge"),
       () => openOperation("merge"),
-      !allImages || list.length < 2,
+      list.length < 2,
+      "image-merge",
+    );
+  }
+  const allPDFs =
+    list.length > 0 &&
+    list.every((e) => e.name.toLowerCase().endsWith(".pdf") || e.ext === "pdf");
+  if (allPDFs && native) {
+    add(
+      t("menu_pdf_images"),
+      () => nativeUI.tools("pdf.images"),
+      false,
+      "pdf-images",
+    );
+  }
+  const allMedia =
+    list.length > 0 &&
+    list.every((e) =>
+      [
+        "mp4",
+        "mkv",
+        "mov",
+        "webm",
+        "avi",
+        "mp3",
+        "wav",
+        "flac",
+        "m4a",
+        "ogg",
+      ].includes(e.ext || e.name.split(".").pop().toLowerCase()),
+    );
+  if (allMedia && native) {
+    add(
+      t("menu_create_gif"),
+      () => nativeUI.tools("media.gif"),
+      false,
+      "media-gif",
+    );
+    add(
+      t("menu_extract_audio"),
+      () => nativeUI.tools("media.audio"),
+      false,
+      "media-audio",
     );
   }
   m.append(document.createElement("hr"));
@@ -662,6 +723,90 @@ document.addEventListener("drop", (ev) => {
     : null;
   addFiles([...ev.dataTransfer.files], cell);
 });
+window.addEventListener("paste", async (ev) => {
+  const active = document.activeElement;
+  if (
+    active &&
+    (active.tagName === "INPUT" ||
+      active.tagName === "TEXTAREA" ||
+      active.isContentEditable ||
+      active.closest(".renaming"))
+  ) {
+    return;
+  }
+  const filesToAdd = [];
+  const items = ev.clipboardData?.items || [];
+  for (const item of items) {
+    if (item.type && item.type.startsWith("image/")) {
+      const blob = item.getAsFile();
+      if (blob) {
+        const ext = blob.type.split("/")[1] || "png";
+        const now = new Date();
+        const stamp = now
+          .toISOString()
+          .slice(0, 19)
+          .replace(/T/, " ")
+          .replace(/:/g, ".");
+        const prefix = t("pasted_prefix");
+        const name = `${prefix} ${stamp}.${ext === "jpeg" ? "jpg" : ext}`;
+        const file = new File([blob], name, { type: blob.type });
+        filesToAdd.push(file);
+      }
+    } else if (item.kind === "file") {
+      const file = item.getAsFile();
+      if (file) filesToAdd.push(file);
+    }
+  }
+  if (!filesToAdd.length && native?.readClipboard) {
+    try {
+      const clip = await native.readClipboard();
+      if (clip && clip.type === "image" && clip.buffer) {
+        const now = new Date();
+        const stamp = now
+          .toISOString()
+          .slice(0, 19)
+          .replace(/T/, " ")
+          .replace(/:/g, ".");
+        const name = `${t("pasted_prefix")} ${stamp}.${clip.ext || "png"}`;
+        const item = await native.saveBlob(clip.buffer, name);
+        const hydrated = await hydrate(item);
+        const centerCell = desktopController?.cellAt
+          ? desktopController.cellAt(
+              window.innerWidth / 2,
+              window.innerHeight / 2,
+            )
+          : null;
+        if (centerCell) hydrated.cell = centerCell;
+        entries.push(hydrated);
+        selected.clear();
+        selected.add(hydrated.id);
+        render();
+        showBalloon({
+          title: t("balloon_pasted_title"),
+          message: t("balloon_pasted_msg", { name }),
+          actions: [],
+        });
+        return;
+      }
+    } catch {}
+  }
+  if (filesToAdd.length) {
+    ev.preventDefault();
+    const centerCell = desktopController?.cellAt
+      ? desktopController.cellAt(window.innerWidth / 2, window.innerHeight / 2)
+      : null;
+    await addFiles(filesToAdd, centerCell);
+    selected.clear();
+    const last = entries[entries.length - 1];
+    if (last) selected.add(last.id);
+    render();
+    showBalloon({
+      title: t("balloon_pasted_title"),
+      message: t("balloon_pasted_msg", { name: filesToAdd[0].name }),
+      actions: [],
+    });
+  }
+});
 function tick() {
   const locale = lang === "tr" ? "tr-TR" : "en-US";
   $("#clock").textContent = new Date().toLocaleTimeString(locale, {
@@ -881,12 +1026,19 @@ const checkEn = $("#checkEn");
 const checkTr = $("#checkTr");
 if (trayLang && langMenu) {
   trayLangCode.textContent = lang.toUpperCase();
-  if (checkEn) checkEn.textContent = lang === "en" ? "✓" : "";
-  if (checkTr) checkTr.textContent = lang === "tr" ? "✓" : "";
+  if (checkEn) checkEn.textContent = lang === "en" ? "\u2713" : "";
+  if (checkTr) checkTr.textContent = lang === "tr" ? "\u2713" : "";
   trayLang.onclick = (ev) => {
     ev.stopPropagation();
-    langMenu.hidden = !langMenu.hidden;
-    trayLang.setAttribute("aria-expanded", String(!langMenu.hidden));
+    const hidden = !langMenu.hidden;
+    langMenu.hidden = hidden;
+    trayLang.setAttribute("aria-expanded", String(!hidden));
+    if (!hidden) {
+      const rect = trayLang.getBoundingClientRect();
+      langMenu.style.bottom = `${window.innerHeight - rect.top + 2}px`;
+      langMenu.style.right = `${Math.max(4, window.innerWidth - rect.right - 2)}px`;
+      langMenu.style.left = "auto";
+    }
   };
   langMenu.querySelectorAll("[data-lang]").forEach((b) => {
     b.onclick = () => setLanguage(b.dataset.lang);

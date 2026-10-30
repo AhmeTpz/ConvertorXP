@@ -6,6 +6,7 @@ import {
   dialog,
   shell,
   session,
+  clipboard,
 } from "electron";
 import path from "node:path";
 import fs from "node:fs/promises";
@@ -264,6 +265,13 @@ app
         if (!["utf8", "utf16le", "windows1254"].includes(encoding))
           throw Error("Kodlama geçersiz.");
         return iconv.decode(await fs.readFile(e.path), encoding);
+      });
+      handler("readClipboard", async () => {
+        const image = clipboard.readImage();
+        if (!image.isEmpty()) {
+          return { type: "image", buffer: image.toPNG(), ext: "png" };
+        }
+        return null;
       });
       ipcMain.on("cxp:startDrag", async (event, ids) => {
         if (

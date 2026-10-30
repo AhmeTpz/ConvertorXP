@@ -149,19 +149,31 @@ export async function imageJob(ctx) {
   }
   if (format === "jpg")
     args.push("-background", "white", "-alpha", "remove", "-alpha", "off");
+  if (format === "ico")
+    args.push("-define", "icon:auto-resize=256,128,64,48,32,16");
   if (op === "image.compress") {
     let met = false;
-    for (let q = 90; q >= 10; q -= 5) {
+    const targetBytes = (Number(o.targetKB) || 250) * 1024;
+    for (let q = 90; q >= 25; q -= 10) {
       await command([...args, "-quality", q, output]);
-      if ((await fs.stat(output)).size <= o.targetKB * 1024) {
+      if ((await fs.stat(output)).size <= targetBytes) {
         met = true;
         break;
       }
     }
-    if (!met)
-      throw Error(
-        "Hedef boyuta kalite sınırı içinde ulaşılamadı. Daha büyük hedef seç veya görseli küçült.",
-      );
+    let scale = 0.85;
+    while (!met && scale >= 0.15) {
+      const pct = Math.round(scale * 100);
+      await command([...args, "-resize", `${pct}%`, "-quality", 55, output]);
+      if ((await fs.stat(output)).size <= targetBytes) {
+        met = true;
+        break;
+      }
+      scale -= 0.15;
+    }
+    if (!met) {
+      await command([...args, "-resize", "10%", "-quality", 30, output]);
+    }
   } else await command([...args, "-quality", o.quality || 90, output]);
   const after = await inspect(output);
   if (after[0].format !== imageTypes[format])
