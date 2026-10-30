@@ -56,14 +56,17 @@ function openFiles(ids = [...selected]) {
           width: Math.min(900, Math.max(500, e.width + 64)),
           height: Math.min(650, Math.max(420, e.height + 170)),
         }
-      : e.viewer === "audio"
-        ? { width: 440, height: 290 }
-        : {};
+      : e.ext === "pdf"
+        ? { width: 920, height: 640 }
+        : e.viewer === "audio"
+          ? { width: 440, height: 290 }
+          : {};
     const { record, created } = windowManager.open(e, initial);
     if (created)
       mountViewer(record, e, {
         save: saveEdited,
         notify,
+        showBalloon,
         documentPreview: nativeUI?.documentPreview,
       }).catch((err) => {
         notify(err.message);
@@ -329,6 +332,12 @@ function menu(x, y) {
     list.length > 0 &&
     list.every((e) => e.name.toLowerCase().endsWith(".pdf") || e.ext === "pdf");
   if (allPDFs && native) {
+    add(
+      t("menu_pdf_workspace"),
+      () => openFiles(list.map((e) => e.id)),
+      false,
+      "pdf-workspace",
+    );
     add(
       t("menu_pdf_images"),
       () => nativeUI.tools("pdf.images"),

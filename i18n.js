@@ -15,7 +15,7 @@ export const dict = {
     desktop_aria: "Dosya masaüstü",
     files_aria: "Dosyalar",
     start_menu_aria: "Başlat menüsü",
-    version_label: "ConvertorXP v0.6.0",
+    version_label: "ConvertorXP v0.7.0",
 
     // Welcome Screen
     welcome_eyebrow: "ESKİ BİR HİS. YENİ BİR ARAÇ KUTUSU.",
@@ -90,6 +90,7 @@ export const dict = {
     menu_compress: "🗜  Hedef boyuta sıkıştır",
     menu_strip: "🛡  Metadata / EXIF temizle",
     menu_pdf_images: "🖼  Sayfaları görsele dönüştür",
+    menu_pdf_workspace: "▤  PDF Çalışma Alanı",
     menu_create_gif: "🎞  GIF oluştur",
     menu_extract_audio: "🎵  Sesi çıkar",
     menu_resize: "⤢  Boyutlandır",
@@ -168,6 +169,29 @@ export const dict = {
     help_alert:
       "Dosyalarını sürükle veya yükle. Boş alanda sürükleyerek birkaçını seç; çift tıkla aç veya sağ tıkla işlem menüsünü aç. Çıktıları sayfayı yenilemeden indir.",
     rename_title_hint: "Enter: kaydet · Esc: vazgeç · Uzantı korunur",
+
+    // PDF Workspace
+    pdf_ws_title: "PDF Çalışma Alanı",
+    pdf_ws_save_as: "Farklı Kaydet",
+    pdf_ws_rotate: "Döndür (90°)",
+    pdf_ws_delete: "Sayfayı Sil",
+    pdf_ws_insert: "Sayfa Ekle",
+    pdf_ws_split: "Sayfalara Böl",
+    pdf_ws_compress: "PDF Sıkıştır",
+    pdf_ws_extract_text: "Metni Çıkar",
+    pdf_ws_export_png: "Sayfaları PNG Yap",
+    pdf_ws_add_text: "Metin Ekle",
+    pdf_ws_add_stamp: "Kaşe / İmza",
+    pdf_ws_zoom_in: "Yakınlaştır",
+    pdf_ws_zoom_out: "Uzaklaştır",
+    pdf_ws_fit_page: "Sığdır",
+    pdf_ws_page_counter: "Sayfa {current} / {total}",
+    pdf_ws_unsaved: "Kaydedilmemiş değişiklikler var",
+    pdf_ws_saved: "Tüm değişiklikler kaydedildi",
+    pdf_ws_confirm_delete: "Bu sayfayı silmek istediğinizden emin misiniz?",
+    pdf_ws_text_prompt: "Sayfa üzerine eklenecek metni yazın:",
+    pdf_ws_click_place: "Metni yerleştirmek istediğiniz konuma tıklayın.",
+    pdf_ws_loading: "PDF açılıyor...",
   },
 
   en: {
@@ -183,7 +207,7 @@ export const dict = {
     desktop_aria: "File desktop",
     files_aria: "Files",
     start_menu_aria: "Start menu",
-    version_label: "ConvertorXP v0.6.0",
+    version_label: "ConvertorXP v0.7.0",
 
     // Welcome Screen
     welcome_eyebrow: "CLASSIC FEEL. MODERN TOOLBOX.",
@@ -258,6 +282,7 @@ export const dict = {
     menu_compress: "🗜  Compress to target size",
     menu_strip: "🛡  Remove EXIF & metadata",
     menu_pdf_images: "🖼  Export pages as images",
+    menu_pdf_workspace: "▤  PDF Workspace",
     menu_create_gif: "🎞  Create GIF",
     menu_extract_audio: "🎵  Extract audio",
     menu_resize: "⤢  Resize",
@@ -334,6 +359,29 @@ export const dict = {
     help_alert:
       "Drag or add your files. Drag to select multiple on desktop; double-click to open or right-click for tools. Download outputs before closing.",
     rename_title_hint: "Enter: save · Esc: cancel · Extension preserved",
+
+    // PDF Workspace
+    pdf_ws_title: "PDF Workspace",
+    pdf_ws_save_as: "Save As",
+    pdf_ws_rotate: "Rotate (90°)",
+    pdf_ws_delete: "Delete Page",
+    pdf_ws_insert: "Insert Pages",
+    pdf_ws_split: "Split Pages",
+    pdf_ws_compress: "Compress PDF",
+    pdf_ws_extract_text: "Extract Text",
+    pdf_ws_export_png: "Export as PNG",
+    pdf_ws_add_text: "Add Text",
+    pdf_ws_add_stamp: "Stamp / Signature",
+    pdf_ws_zoom_in: "Zoom In",
+    pdf_ws_zoom_out: "Zoom Out",
+    pdf_ws_fit_page: "Fit Page",
+    pdf_ws_page_counter: "Page {current} of {total}",
+    pdf_ws_unsaved: "Unsaved changes",
+    pdf_ws_saved: "All changes saved",
+    pdf_ws_confirm_delete: "Are you sure you want to delete this page?",
+    pdf_ws_text_prompt: "Enter text to add onto the page:",
+    pdf_ws_click_place: "Click on the page where you want to place the text.",
+    pdf_ws_loading: "Opening PDF...",
   },
 };
 

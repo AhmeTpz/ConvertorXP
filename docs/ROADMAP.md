@@ -65,10 +65,18 @@ Durum: **Doğrulandı**. Doğrulanan sürüm: **0.6.0** (E2E: `tests/e2e/stage2.
 ---
 
 ## Aşama 3 — PDF Çalışma Penceresi
-Durum: **Bekliyor**. Hedef sürüm: 0.7.0.
-- [ ] Solda sayfa küçük resimleri, ortada belge, üstte araç çubuğu.
-- [ ] Sıralama/silme/döndürme; birleştirme/bölme; görsel/metin çıkarma; sıkıştırma.
-- [ ] Yazı, görsel, kaşe/çizim ekleme, form doldurma (çizim/imza eklentisi).
+Durum: **Doğrulandı**. Doğrulanan sürüm: **0.7.0** (E2E: `tests/e2e/stage3.e2e.mjs`, Unit: `tests/pdf-workspace.test.mjs`).
+- [x] **Sol Kenar Çubuğu (Küçük Resimler):** Tüm sayfalar numaralı küçük resim kartlarıyla listelenir; kart üzerine gelindiğinde hızlı 90° döndürme (`🔄`) ve silme (`🗑`) düğmeleri sunulur.
+- [x] **Sürükle-Bırak Sayfa Sıralama (Drag Reorder):** Sayfa kartları fareyle sürüklenerek anında yeniden sıralanır (`.drop-before`/`.drop-after` yerleşim çizgileri).
+- [x] **Yüksek Çözünürlüklü Orta Tuval:** Seçili sayfa keskin çözünürlükle render edilir; Sığdır, 100%, Yakınlaştır (+) ve Uzaklaştır (-) butonlarıyla kontrol edilir.
+- [x] **Sayfa Üzerine Metin & Kaşe/İmza Ekleme:** Tıklanan konuma metin notu/filigran veya PNG imza/kaşe damgası yerleştirilir.
+- [x] **Araç Çubuğu Hızlı Eylemleri:**
+  - Tek tıkla sayfaları bölme (`split`)
+  - QPDF / nesne akışlarıyla kayıpsız sıkıştırma (`compress`)
+  - Metin çıkarma (`extract-text` -> `.txt`)
+  - Sayfaları PNG'ye dökme (`export-png` -> `.png`)
+  - Harici PDF/görsellerden sayfa ekleme (`insert`)
+- [x] **Kaynak Dokunulmazlığı & Farklı Kaydet (Save As):** Orijinal kaynak dosyanın hash'i korunur; düzenlenen belge `-duzenlendi.pdf` olarak dışa aktarılır ve XP sarı balon bildirimi gösterilir.
 
 ---
 

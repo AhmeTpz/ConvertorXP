@@ -1,5 +1,5 @@
 import { isOffice } from "./shared/pdf-layout.js";
-import { mountNativePDF } from "./native-ui.js";
+import { mountPdfWorkspace } from "./pdf-workspace.js";
 import { mountEditor } from "./editor.js";
 export function viewerType(file) {
   const ext = file.name.split(".").pop().toLowerCase();
@@ -46,8 +46,8 @@ export async function mountViewer(record, entry, services) {
     return;
   }
   if (entry.native && entry.ext === "pdf") {
-    const dispose = await mountNativePDF(host, entry, services.notify);
-    if (record.closed) dispose();
+    const dispose = await mountPdfWorkspace(host, entry, services);
+    if (record.closed) dispose?.();
     else record.dispose = dispose;
     return;
   }

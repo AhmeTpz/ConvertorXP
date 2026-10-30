@@ -15,6 +15,7 @@ for (const file of [
   "native-ui.js",
   "conversion-ui.js",
   "i18n.js",
+  "pdf-workspace.js",
 ])
   await copyFile(file, `dist/${file}`);
 console.log("Static build ready: dist/");
@@ -25,3 +26,7 @@ for (const f of ["catalog.js", "pdf-layout.js"])
 await mkdir("dist/vendor", { recursive: true });
 for (const f of ["pdf.mjs", "pdf.worker.mjs"])
   await copyFile("node_modules/pdfjs-dist/build/" + f, "dist/vendor/" + f);
+await copyFile(
+  "node_modules/pdf-lib/dist/pdf-lib.esm.min.js",
+  "dist/vendor/pdf-lib.mjs",
+);

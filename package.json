@@ -1,6 +1,6 @@
 {
   "name": "convertor-xp",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -11,8 +11,8 @@
     "test": "node --test tests/*.test.mjs",
     "desktop": "npm run build && electron .",
     "dist:win": "npm run build && npm run licenses && electron-builder --win nsis --x64",
-    "test:e2e": "npm run build && node tests/e2e/stage1.e2e.mjs && node tests/e2e/stage2.e2e.mjs",
-    "test:e2e:stage2": "npm run build && node tests/e2e/stage2.e2e.mjs",
+    "test:e2e": "npm run build && node tests/e2e/stage1.e2e.mjs && node tests/e2e/stage2.e2e.mjs && node tests/e2e/stage3.e2e.mjs",
+    "test:e2e:stage3": "npm run build && node tests/e2e/stage3.e2e.mjs",
     "test:e2e:exe": "node tests/e2e/stage1.e2e.mjs --exe",
     "check:native": "node scripts/check-native.mjs",
     "test:desktop": "electron scripts/test-desktop.mjs",
