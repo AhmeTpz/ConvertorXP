@@ -1,5 +1,26 @@
 export const GRID_W = 90,
   GRID_H = 96;
+
+export function cellsFrom(start, count, occupied = new Set(), cols = 1) {
+  const result = [];
+  let { x, y } = start;
+  x = Math.max(0, Math.min(x, cols - 1));
+  y = Math.max(0, y);
+  while (result.length < count) {
+    const key = `${x},${y}`;
+    if (!occupied.has(key)) {
+      result.push({ x, y });
+      occupied.add(key);
+    }
+    x++;
+    if (x >= cols) {
+      x = 0;
+      y++;
+    }
+  }
+  return result;
+}
+
 export function createDesktop({
   root,
   desktop,
@@ -10,6 +31,7 @@ export function createDesktop({
   onMenu,
   onChange,
   onHideMenus,
+  onDragOut,
   notify,
 }) {
   let gesture = null,
@@ -158,6 +180,27 @@ export function createDesktop({
     g.moved = true;
     lastTap = null;
     if (g.kind === "move") {
+      const margin = 2;
+      const isOutOfWindow =
+        ev.clientX < margin ||
+        ev.clientX > window.innerWidth - margin ||
+        ev.clientY < margin ||
+        ev.clientY > window.innerHeight - margin;
+
+      if (isOutOfWindow && onDragOut && g.positions.length) {
+        for (const el of root.children) {
+          el.style.transform = "";
+          el.classList.remove("moving");
+        }
+        const ids = g.positions.map((p) => p.id);
+        gesture = null;
+        try {
+          desktop.releasePointerCapture(ev.pointerId);
+        } catch {}
+        onDragOut(ids);
+        return;
+      }
+
       for (const p of g.positions) {
         const el = root.querySelector(`[data-id="${p.id}"]`);
         el.style.transform = `translate(${dx}px,${dy}px)`;
@@ -299,6 +342,16 @@ export function createDesktop({
       sync();
     }
   });
+  function cellAt(clientX, clientY) {
+    const r = root.getBoundingClientRect();
+    const count = cols();
+    const x = Math.max(
+      0,
+      Math.min(Math.floor((clientX - r.left) / GRID_W), count - 1),
+    );
+    const y = Math.max(0, Math.floor((clientY - r.top) / GRID_H));
+    return { x, y };
+  }
   window.addEventListener("resize", layout);
-  return { render: draw, sync, layout };
+  return { render: draw, sync, layout, cellAt, cols };
 }

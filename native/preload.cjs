@@ -11,6 +11,7 @@ contextBridge.exposeInMainWorld("convertorDesktop", {
         .map((file) => webUtils.getPathForFile(file))
         .filter(Boolean),
     ),
+  startDrag: (ids) => ipcRenderer.send("cxp:startDrag", ids),
   saveWorkspace: (entries, ui) => invoke("workspace", entries, ui),
   remove: (ids) => invoke("remove", ids),
   duplicate: (ids) => invoke("duplicate", ids),

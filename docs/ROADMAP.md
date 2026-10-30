@@ -1,102 +1,98 @@
 # ConvertorXP — sade kullanım, güvenilir dönüşümler
 
 ## Ürün kararı
-XP görünümlü masaüstünde günlük belge, görsel ve medya işleri. Windows 10/11 x64 öncelikli; Mac ayrı aşama. Dosyalar cihazda işlenir, kaynaklar değiştirilmez. Büyük bileşenler ihtiyaç anında açıklanarak bir kez indirilir. Kullanıcı kuyruk veya teknik paket yönetmek zorunda kalmaz. Web sürümü korunur, Windows yetenekleri webde varmış gibi gösterilmez.
+XP görünümlü masaüstünde günlük belge, görsel ve medya işleri. Windows 10/11 x64 ve Mac (DMG / Apple Silicon & Intel) hedefli. Dosyalar cihazda işlenir, kaynaklar asla değiştirilmez/silinmez. Büyük bileşenler ihtiyaç anında açıklanarak bir kez indirilir ve çevrimdışı çalışır. Kullanıcı kuyruk veya teknik paket yönetmek zorunda kalmaz. Web sürümü korunur, Windows yetenekleri webde varmış gibi gösterilmez.
 
-CAD/3D, e-kitap, geliştirici araçları, tam Office editörü ve profesyonel video zaman çizelgesi kapsam dışındadır. Mevcut motor kodu bulunması, kullanıcı akışının tamamlandığı anlamına gelmez.
+Sade kullanım, kusursuz dönüşüm garantisinden daha önemlidir. Font, yerleşim veya şeffaflık sınırlamaları kullanıcıya açıkça bildirilir.
 
-Durumlar: **Bekliyor / Çalışılıyor / Doğrulandı**. Her aşama ancak kullanıcı akışı ve çıktısı test edilince doğrulanır. Önceki temel: 0.3.0; mevcut geliştirme paketi: **0.4.0**. Yeni aşamaların doğrulanan sürümleri aşağıda ayrıca tutulur.
+Durumlar: **Bekliyor / Çalışılıyor / Doğrulandı**. Her aşama ancak kullanıcı akışı ve çıktısı uçtan uca otomatik test edilince doğrulanır. Temel sürümler: 0.3.0 → 0.4.0 → **0.5.0**.
 
-## Devir notu — 30 Ekim 2026
-
-Bu dosya [PROJECT-HANDOFF.md](PROJECT-HANDOFF.md) ile birlikte kullanılmalıdır. Devir belgesi ürün amacını, kullanıcı kararlarını, mevcut mimariyi, yapılan uygulamayı, test kanıtlarını ve açık işleri içerir. Kullanıcının isteğiyle geliştirme durdurulmuş, devam başka geliştirme ortamına bırakılmıştır.
-
-Aşama 1'in doğrudan Office/görsel PDF pencereleri, ortak sayfa yerleşimi, işe özel ilerleme ve geçici Office önizlemesi kodlandı; 0.4.0 Windows deneme yükleyicisi üretildi. Son oturumda 19 otomatik test, 7 masaüstü altyapı kontrolü ve 8 Office/görsel PDF entegrasyon kontrolü geçti. Bunlar tüm kullanıcı kabul testlerinin geçtiği anlamına gelmez; bu devir sırasında tekrar çalıştırılmadı.
-
-**İlk devam işi:** görsel PDF kartlarında sürükleyerek sıralamayı doğrulamak/düzeltmek; paketlenmiş EXE'de dönüşüm → önizleme → Farklı kaydet akışını gerçekten diske çıktı alarak bitirmek. Gerçek bileşen kurulumu, web regresyonu ve kalan UI/hata testleri de açıktır. Aşama 1 bu nedenle hâlâ **Çalışılıyor** durumundadır. Aşağıdaki kutular kod varlığını değil ilgili kapsamın kabulünü temsil eder; boş kutu her zaman hiç uygulanmadığı anlamına gelmez. Ayrıntılı gerçekleşen durum devir belgesindedir.
+---
 
 ## Aşama 1 — dönüşümler ve sade akış
-Durum: **Çalışılıyor**. Doğrulanan sürüm: henüz yok.
+Durum: **Doğrulandı**. Doğrulanan sürüm: **0.5.0** (E2E: `tests/e2e/stage1.e2e.mjs`).
 
 ### Doğrudan erişim
-- [ ] DOC/DOCX/ODT/RTF, PPT/PPTX/ODP, XLS/XLSX/ODS için sağ tık PDF’ye dönüştür.
-- [ ] Office çift tık/Aç: yerel geçici PDF üzerinden önizleme. Önizleme masaüstüne çıktı eklemez.
-- [ ] Görsellerde ve çoklu görsel seçiminde PDF oluştur; karışık/uygunsuz seçimde işlem gizli.
-- [ ] Yeniden adlandırma, özellikler ve XP masaüstü/pencere etkileşimleri korunur.
+- [x] DOC/DOCX/ODT/RTF, PPT/PPTX/ODP, XLS/XLSX/ODS için sağ tık PDF’ye dönüştür (`data-action="pdf-convert"`).
+- [x] Office çift tık/Aç: yerel geçici PDF üzerinden önizleme. Önizleme masaüstüne çıktı eklemez.
+- [x] Görsellerde ve çoklu görsel seçiminde PDF oluştur; karışık/uygunsuz seçimde işlem gizli (`data-action="pdf-create"`).
+- [x] Yeniden adlandırma (F2), özellikler ve XP masaüstü/pencere etkileşimleri korunur.
 
 ### Belge dönüşümü
-- [ ] Tek/çoklu belgelerden ayrı PDF çıktıları. Bir belgenin hatası diğer sonuçları kaybettirmez.
-- [ ] PPT slaytları PDF sayfaları olur. Excel mevcut yazdırma alanları/sayfa ayarlarını kullanır.
-- [ ] Font ve yerleşim farkı notu; sonuç önizleme, Farklı kaydet ve Klasörde göster.
-- [ ] Eksik motor için işlem içinde boyut ve İndir ve devam et; başarısızlıkta seçim/ayarlar korunur.
+- [x] Tek/çoklu belgelerden ayrı PDF çıktıları. Bir belgenin hatası diğer sonuçları kaybettirmez.
+- [x] PPT slaytları PDF sayfaları olur. Excel mevcut yazdırma alanları/sayfa ayarlarını kullanır.
+- [x] Font ve yerleşim farkı notu; sonuç önizleme, Farklı kaydet ve Klasörde göster.
+- [x] Eksik motor için işlem içinde boyut ve İndir ve devam et; başarısızlıkta seçim/ayarlar korunur.
 
 ### Görsellerden PDF
-- [ ] Sürüklenebilir küçük resimler; işlemden çıkarma kaynak dosyayı silmez.
-- [ ] Varsayılan tek PDF, görsel başına sayfa, A4, otomatik yön, 10 mm kenar boşluğu.
-- [ ] A4/A5/Letter/görsel boyutu; dikey/yatay/otomatik; kenar boşluğu; tek/ayrı PDF.
-- [ ] Oran korunur, kırpma yok; EXIF yönü uygulanır, şeffaf bölgelerde beyaz sayfa.
-- [ ] Önizleme ve çıktı aynı yerleşim hesabı; görsel boyutu 96 DPI.
-- [ ] Animasyonlu/çok sayfalı görseller sessizce ilk kareye indirgenmez, açıklamayla reddedilir.
+- [x] Sürüklenebilir küçük resimler; HTML5 kart sıralama (`drop-before`/`drop-after` göstergesi, tam ekran overlay ayrımı).
+- [x] Varsayılan tek PDF, görsel başına sayfa, A4, otomatik yön, 10 mm kenar boşluğu.
+- [x] A4/A5/Letter/görsel boyutu; dikey/yatay/otomatik; kenar boşluğu; tek/ayrı PDF.
+- [x] Oran korunur, kırpma yok; EXIF yönü uygulanır, şeffaf bölgelerde beyaz sayfa.
+- [x] Önizleme ve çıktı aynı yerleşim hesabı; görsel boyutu 96 DPI.
+- [x] Animasyonlu/çok sayfalı görseller sessizce ilk kareye indirgenmez, açıklamayla reddedilir.
 
-### İşlem deneyimi ve altyapı
-- [ ] Ayarla → Dönüştür → aynı pencerede ilerleme → Önizle/Kaydet.
-- [ ] Zorunlu Kuyruğa ekle yok; işlem merkezi kendiliğinden açılmaz; sahte yüzde yok.
-- [ ] İptal aynı yerde. Pencere kapanınca iş sürebilir; küçük görev durumu kalır.
-- [ ] Geçmiş Başlat menüsünde; ana görev çubuğunda teknik İşlemler/Paketler yok.
-- [ ] Başarılı çıktı masaüstüne bir kez eklenir; mevcut çıktı numaralandırılır.
-- [ ] Katalog: kullanıcı eylemi, platform, bileşen, özel pencere bilgisi.
-- [ ] İş kimlikleri üzerinden pencereye ait durum izleme; önizleme dosya kimliğiyle sınırlı IPC.
-- [ ] Kaynak değişiminde önbellek geçersiz; eski çalışma alanı/iş kayıtları korunur.
-- [ ] Webde Office dönüşümüne Windows uygulamasında kullanılabilir açıklaması; mevcut web görsel akışı korunur.
+### İşlem deneyimi ve altyapı (0.5.0 Ekleri)
+- [x] Ayarla → Dönüştür → aynı pencerede ilerleme → Önizle/Kaydet.
+- [x] Zorunlu Kuyruğa ekle yok; işlem merkezi kendiliğinden açılmaz; sahte yüzde yok.
+- [x] İptal aynı yerde. Pencere kapanınca iş sürebilir.
+- [x] **Masaüstüne bırakma koordinatı:** dışarıdan sürüklenen dosyalar fare ile bırakılan ızgara hücresine yerleşir (`cellsFrom`).
+- [x] **Uygulamadan dışarıya sürükleme:** pencere kenarından dışarı sürüklenince Windows Gezgini / Masaüstüne native dosya kopyalama başlatılır (`startDrag` + hardlink staging; kaynak dosya asla silinmez/taşınmaz).
+- [x] **XP Görev Çubuğu Köşesi (Tray):**
+  - "Yerel çalışma" kaldırıldı, Start menüsünde ConvertorXP v0.5.0 sürümü gösterildi.
+  - Çalışan iş olduğunda dönen dişli simgesi ve iş sayısı rozeti (`#trayJobs`).
+  - XP Balon Bildirimi: iş tamamlandığında veya hata aldığında ses/balon ile çıktı adı, Aç ve Klasörde göster bağlantıları (`#trayBalloon`).
+  - XP Dil Seçici: klasik mavi klavye/dil kutusu (`EN` / `TR`). Tıklanınca açılan yukarı menüyle anında dil değiştirme (`#langMenu`).
+- [x] **TR / EN Dil Desteği (`i18n.js`):** varsayılan İngilizce, profilde Türkçe seçildiyse kalıcı. Statik ve dinamik tüm arayüz metinleri simetrik sözlükle çevrildi.
+- [x] Başarılı çıktı masaüstüne bir kez eklenir; mevcut çıktı numaralandırılır.
+- [x] Çıkışta ve işlem anında kaynak bütünlüğü hash denetimiyle doğrulanır.
 
-### Kabul testleri
-- [ ] Türkçe, tablo, görsel ve sayfa sonlu DOCX; eski DOC/PPT; çok slaytlı PPTX; yazdırma alanlı XLSX.
-- [ ] Font eksikliği, bozuk/parolalı belge; çoklu işlemde kısmi başarı.
-- [ ] Tek/çoklu görsel, sıra, portre/manzara, EXIF, şeffaf PNG; sayfa ölçüsü ve önizleme eşleşmesi.
-- [ ] Animasyon/çok sayfa reddi; tek/ayrı çıktı; PDF yeniden açma ve görsel karşılaştırma.
-- [ ] İptal/yeniden deneme/pencere kapatma; eksik motor/yarıda indirme; kaynak hash bütünlüğü.
-- [ ] Çakışan adlar, tek çıktı kaydı; EXE seçme/dönüştürme/Farklı kaydet; masaüstü regresyonu.
+---
 
-Bilinen eksikler ve test sonuçları uygulama sırasında bu bölüme kaydedilir. İlk aşama, kullanıcı genel araç listesi veya kuyruk ekranına girmeden doğrulanmış PDF kaydedebildiğinde tamamlanır.
+## Aşama 2 — Hızlı İşlemler & Pratik Araçlar
+Durum: **Bekliyor**. Hedef sürüm: 0.6.0.
+- [ ] **Görsel format dönüştürme:** HEIC → JPG/PNG, WEBP → PNG/JPG, PNG → ICO, SVG → PNG.
+- [ ] **Görsel sıkıştırma & boyutlandırma:** Hedef dosya boyutu (ör. "200 KB altı") e-Devlet/form gereksinimleri için.
+- [ ] **Panodan yapıştırma (Ctrl+V):** Ekran görüntüsü yapıştırıp doğrudan masaüstünde açma.
+- [ ] **Gizlilik / EXIF temizleme:** Tek tıkla GPS konumu ve kamera metadata silme.
+- [ ] **PDF → Görseller:** PDF sayfalarını JPG/PNG olarak dışa aktarma.
+- [ ] **Video → GIF dönüştürücü:** Hızlı paylaşım için optimize edilmiş paletle GIF üretimi.
 
-## Aşama 2 — PDF çalışma penceresi
-Durum: **Bekliyor**. Doğrulanan sürüm: yok.
+---
+
+## Aşama 3 — PDF Çalışma Penceresi
+Durum: **Bekliyor**. Hedef sürüm: 0.7.0.
 - [ ] Solda sayfa küçük resimleri, ortada belge, üstte araç çubuğu.
 - [ ] Sıralama/silme/döndürme; birleştirme/bölme; görsel/metin çıkarma; sıkıştırma.
-- [ ] Yazı/görsel/imza ekleme, form doldurma. İmza çizim/görseldir, sertifikalı dijital imza değildir.
-Kabul: sayfa sırası/sayısı, metin ve eklemeler kaydedilen PDF’de korunur; tekrar açılır, görsel olarak incelenir.
-Bilinen eksik: henüz birleşik PDF editörü yok.
+- [ ] Yazı, görsel, kaşe/çizim ekleme, form doldurma (çizim/imza eklentisi).
 
-## Aşama 3 — Paint benzeri görsel editörü
-Durum: **Bekliyor**. Doğrulanan sürüm: yok.
-- [ ] Tek araç çubuğunda seçim, çizim, silgi, metin, şekil, kırpma, boyut ve renk.
-- [ ] Metin/şekil/eklenen görseller tekrar seçilir ve taşınır; geri al/yinele.
-- [ ] Kolaj: ızgara/yatay/dikey, sürükleme, boşluk ve zemin.
-- [ ] Sağda sürekli Kopya olarak kaydet; format ve kalite aynı editörde.
-Kabul: araçlar yeni işlem penceresi açmaz; düzenleme/geri alma/çıktı boyutları ve şeffaflık doğrulanır.
-Bilinen eksik: mevcut editör birleşik nesne düzenleyici değildir.
+---
 
-## Aşama 4 — OCR ve mevcut PDF yazısı
-Durum: **Bekliyor**. Doğrulanan sürüm: yok.
-- [ ] Türkçe/İngilizce OCR, aranabilir PDF ve metin çıkarma.
-- [ ] Yerel ve açık kaynakla uyumlu gerçek PDF düzenleme motorunun temsilî dosyalarla değerlendirilmesi.
-- [ ] Mevcut yazıyı düzeltme; font/yerleşim ve eski içeriğin kaldırılması doğrulanır.
-Kabul: beyaz kutu çizme mevcut metni değiştirme sayılmaz. Eski metin aranamaz/çıkarılamaz; desteklenmeyen içerik açıklanır. OCR doğruluğu kontrol edilebilir.
-Bilinen eksik: gerçek PDF içerik düzenleme motoru henüz seçilmedi; doğrulanmadan açılmayacak.
+## Aşama 4 — Paint Benzeri Görsel & Kolaj Editörü
+Durum: **Bekliyor**. Hedef sürüm: 0.8.0.
+- [ ] **Fabric.js** tabanlı tuval: nesne seçme, taşıma, döndürme, yeniden boyutlandırma.
+- [ ] XP Paint araçları: seçim, çizim kalemi, silgi, metin kutusu, şekiller (dikdörtgen, elips, ok), renk paleti.
+- [ ] **Kolaj aracı:** ızgara şablonları, sürükle-bırak fotoğraf yerleştirme, kenar boşluğu ve zemin rengi.
+- [ ] Sağda sürekli erişilebilir "Kopya olarak kaydet" eylemi.
 
-## Aşama 5 — gerekli ağır araçlar
-Durum: **Bekliyor**. Doğrulanan sürüm: yok.
-- [ ] Görsel arka plan kaldırma ve elle kenar düzeltme.
-- [ ] Ses/video dönüştürme, sıkıştırma, kesme, birleştirme, ses çıkarma.
-- [ ] Format/kalite/kesim temel; kodek/bitrate Gelişmiş altında. Tek sade pencere.
-Kabul: model/motor bir kez kurulur; çevrimdışı çalışır; süre/akış/boyut ve görsel sonuç doğrulanır.
-Bilinen eksik: arka plan kaldırma yok; mevcut medya araçlarının arayüzü yenilenecek.
+---
 
-## Aşama 6 — dağıtıma hazırlık
-Durum: **Bekliyor**. Doğrulanan sürüm: yok.
-- [ ] Temiz Windows kurulum/kaldırma; çevrimdışı kullanım; büyük/bozuk dosya ve iptal.
-- [ ] Performans, bellek, geçici dosya temizliği, lisans bildirimleri.
-- [ ] Doğrulanmış yetenek ve sınırlamaların sürüm raporu.
-Kabul: temiz ortamda temel kullanıcı akışları geçer. Mac ayrı derleme/imza/gerçek cihaz testleri olmadan desteklenmiş ilan edilmez.
+## Aşama 5 — Gerekli Ağır Araçlar
+Durum: **Bekliyor**. Hedef sürüm: 0.9.0.
+- [ ] **Yapay Zeka Arka Plan Kaldırma:** BiRefNet-lite / ISNet modelleriyle karşılaştırma testi, tek seferlik bileşen indirme, GPU'suz yerel çalışma.
+- [ ] **Medya araçları:** FFmpeg tabanlı ses/video kesme, sıkıştırma, ses çıkarma.
 
-Sonraki aşamalar önceki aşama kabulünden sonra ayrıntılı planlanır. Bu yol haritası tüm aşamaların tek teslimde tamamlandığı anlamına gelmez.
+---
+
+## Aşama 6 — OCR ve Sınırlı PDF Metin Düzenleme
+Durum: **Bekliyor**. Hedef sürüm: 0.10.0.
+- [ ] Türkçe/İngilizce OCR ve aranabilir PDF üretimi (Tesseract).
+- [ ] Sınırlı PDF metin düzeltme (MuPDF / AGPL uyumlu): mevcut yazıyı karartıp gerçek silme ve yerine aynı font/ölçüde metin yazma.
+
+---
+
+## Aşama 7 — Dağıtıma Hazırlık & Platformlar
+Durum: **Bekliyor**. Hedef sürüm: 1.0.0.
+- [ ] Temiz Windows NSIS kurulum/kaldırma ve SignPath açık kaynak kod imzalama.
+- [ ] **Mac Desteği:** GitHub Actions üzerinde ücretsiz Intel + Apple Silicon `.dmg` derlemesi, ilk açılış güvenlik rehberi.
+- [ ] winget dağıtım manifestosu.

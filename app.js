@@ -6,10 +6,12 @@ import {
   renamedName,
   copyName,
 } from "./file-utils.js";
-import { createDesktop } from "./desktop.js";
+import { createDesktop, cellsFrom } from "./desktop.js";
 import { createWindowManager } from "./windows.js";
 import { mountViewer, viewerType } from "./viewers.js";
+import { t, lang, setLanguage, applyStatic } from "./i18n.js";
 const $ = (s) => document.querySelector(s);
+applyStatic();
 let nativeReady = false,
   saveTimer,
   refreshing = false,
@@ -32,12 +34,16 @@ const desktopController = createDesktop({
   onRename: renameFile,
   onMenu: menu,
   onChange: () => {
-    $("#selection").textContent =
-      `${selected.size} / ${entries.length} dosya seçili`;
+    $("#selection").textContent = selected.size
+      ? t("selection_count", { selected: selected.size, total: entries.length })
+      : t("selection_zero");
   },
   onHideMenus: () => {
     $("#contextMenu").hidden = true;
     closeStart();
+  },
+  onDragOut: (ids) => {
+    if (native?.startDrag) native.startDrag(ids);
   },
   notify,
 });
@@ -139,11 +145,22 @@ function toggle(id) {
   render();
 }
 const inspect = inspectImage;
-async function addFiles(files) {
+async function addFiles(files, targetCell = null) {
   if (native) {
     try {
       const added = await native.dropFiles(files);
-      for (const e of added) entries.push(await hydrate(e));
+      const occupied = new Set(
+        entries.filter((e) => e.cell).map((e) => `${e.cell.x},${e.cell.y}`),
+      );
+      const start = targetCell || { x: 0, y: 0 };
+      const cells = targetCell
+        ? cellsFrom(start, added.length, occupied, desktopController.cols())
+        : [];
+      for (const [i, e] of added.entries()) {
+        const item = await hydrate(e);
+        if (cells[i]) item.cell = cells[i];
+        entries.push(item);
+      }
       render();
     } catch (err) {
       notify(err.message);
@@ -155,20 +172,29 @@ async function addFiles(files) {
   busy = true;
   let skipped = 0;
   try {
-    for (const file of files) {
+    const occupied = new Set(
+      entries.filter((e) => e.cell).map((e) => `${e.cell.x},${e.cell.y}`),
+    );
+    const start = targetCell || { x: 0, y: 0 };
+    const cells = targetCell
+      ? cellsFrom(start, files.length, occupied, desktopController.cols())
+      : [];
+    for (const [i, file] of files.entries()) {
       if (entries.length >= 60 || file.size > 30 * 1024 * 1024) {
         skipped++;
         continue;
       }
       const info = await inspect(file);
-      entries.push({
+      const item = {
         id: crypto.randomUUID(),
         file,
         name: file.name,
         url: URL.createObjectURL(file),
         viewer: info.image ? "image" : viewerType(file),
         ...info,
-      });
+      };
+      if (cells[i]) item.cell = cells[i];
+      entries.push(item);
     }
     render();
     if (skipped)
@@ -185,8 +211,9 @@ function menu(x, y) {
   m.replaceChildren();
   const list = entries.filter((e) => selected.has(e.id));
   const allImages = list.length > 0 && list.every((e) => e.image);
-  const add = (text, fn, disabled = false) => {
+  const add = (text, fn, disabled = false, action = "") => {
     const b = document.createElement("button");
+    if (action) b.dataset.action = action;
     const split = text.indexOf("  ");
     const glyph = document.createElement("span");
     glyph.className = "menu-icon";
@@ -204,18 +231,18 @@ function menu(x, y) {
   const caption = document.createElement("div");
   caption.className = "menu-caption";
   caption.textContent = list.length
-    ? `${list.length} dosya seçildi`
+    ? t("menu_selected", { count: list.length })
     : "ConvertorXP";
   m.append(caption);
   if (!list.length) {
     if (native) {
-      add("📁  Klasör ekle", () => pickNative(true));
+      add(t("menu_add_folder"), () => pickNative(true));
     }
-    add("📁  Dosya yükle", () =>
+    add(t("menu_add_files"), () =>
       native ? pickNative() : $("#fileInput").click(),
     );
     add(
-      "☑  Tümünü seç",
+      t("menu_select_all"),
       () => {
         entries.forEach((e) => selected.add(e.id));
         render();
@@ -223,10 +250,11 @@ function menu(x, y) {
       !entries.length,
     );
     add(
-      "↕  Ada göre sırala",
+      t("menu_sort_name"),
       () => {
+        const locale = lang === "tr" ? "tr" : "en";
         entries.sort((a, b) =>
-          a.name.localeCompare(b.name, "tr", { numeric: true }),
+          a.name.localeCompare(b.name, locale, { numeric: true }),
         );
         entries.forEach((e) => (e.cell = null));
         $("#files").replaceChildren();
@@ -237,52 +265,50 @@ function menu(x, y) {
     positionMenu(m, x, y);
     return;
   }
-  add("▣  Aç", () => openFiles(list.map((e) => e.id)));
+  add(t("menu_open"), () => openFiles(list.map((e) => e.id)));
   if (!native && list.every(isOffice))
-    add("▤  PDF’ye dönüştür · Windows uygulamasında", () =>
-      notify("Office dönüşümleri Windows uygulamasında kullanılabilir."),
+    add(t("menu_pdf_convert_web"), () =>
+      notify("Office conversions are available in the desktop application."),
     );
   if (native) {
     if (list.every(isOffice))
-      add("▤  PDF’ye dönüştür", () => nativeUI.convertPDF());
+      add(
+        t("menu_pdf_convert"),
+        () => nativeUI.convertPDF(),
+        false,
+        "pdf-convert",
+      );
     if (list.every((e) => e.isImage || e.image || e.previewImage))
-      add("▤  PDF oluştur", () => nativeUI.convertPDF());
+      add(
+        t("menu_pdf_create"),
+        () => nativeUI.convertPDF(),
+        false,
+        "pdf-create",
+      );
     if (list.every((e) => e.image))
-      add("✎  Düzenle", () => openFiles(list.map((e) => e.id)));
-    add("⚙  Diğer araçlar", () => nativeUI.tools());
+      add(t("menu_edit"), () => openFiles(list.map((e) => e.id)));
+    add(t("menu_tools"), () => nativeUI.tools());
     if (list.length > 1)
-      add("✎  Toplu yeniden adlandır", () => nativeUI.batchRename());
-    add(
-      "↗  Klasörde göster",
-      () => native.reveal(list[0].id),
-      list.length !== 1,
-    );
+      add(t("menu_batch_rename"), () => nativeUI.batchRename());
+    add(t("menu_reveal"), () => native.reveal(list[0].id), list.length !== 1);
   }
-  add(
-    "✎  Yeniden adlandır   F2",
-    () => renameFile(list[0].id),
-    list.length !== 1,
-  );
-  add("▣  Kopyasını oluştur", () => duplicateFiles(list));
+  add(t("menu_rename"), () => renameFile(list[0].id), list.length !== 1);
+  add(t("menu_duplicate"), () => duplicateFiles(list));
   m.append(document.createElement("hr"));
   if (allImages) {
+    add(t("menu_convert_quality"), () => openOperation("convert"), !allImages);
+    add(t("menu_resize"), () => openOperation("resize"), !allImages);
+    add(t("menu_rotate"), () => openOperation("rotate"), !allImages);
     add(
-      "⇄  Dönüştür / kalite ayarla",
-      () => openOperation("convert"),
-      !allImages,
-    );
-    add("⤢  Boyutlandır", () => openOperation("resize"), !allImages);
-    add("↻  Sağa döndür", () => openOperation("rotate"), !allImages);
-    add(
-      "▧  Görselleri birleştir",
+      t("menu_merge"),
       () => openOperation("merge"),
       !allImages || list.length < 2,
     );
   }
   m.append(document.createElement("hr"));
-  add("↓  Dosyayı indir", () => download(list[0]), list.length !== 1);
+  add(t("menu_download"), () => download(list[0]), list.length !== 1);
   add(
-    "☑  Tümünü seç",
+    t("menu_select_all"),
     () => {
       entries.forEach((e) => selected.add(e.id));
       render();
@@ -290,16 +316,16 @@ function menu(x, y) {
     !entries.length,
   );
   add(
-    "☐  Seçimi temizle",
+    t("menu_clear_selection"),
     () => {
       selected.clear();
       render();
     },
     !list.length,
   );
-  add("ⓘ  Özellikler", () => openOperation("info"), !list.length);
+  add(t("menu_properties"), () => openOperation("info"), !list.length);
   add(
-    "×  Masaüstünden kaldır",
+    t("menu_remove"),
     () => {
       if (native)
         native
@@ -606,24 +632,39 @@ document.addEventListener("keydown", (ev) => {
     closeStart();
   }
 });
+// Only external file drags (e.g. from Explorer/Finder) show the drop overlay.
+// In-app drags such as reordering PDF page cards must not be intercepted.
+const hasFiles = (ev) => [...(ev.dataTransfer?.types || [])].includes("Files");
 let dragDepth = 0;
 document.addEventListener("dragenter", (ev) => {
+  if (!hasFiles(ev)) return;
   ev.preventDefault();
   dragDepth++;
   document.body.classList.add("dragging");
 });
-document.addEventListener("dragover", (ev) => ev.preventDefault());
-document.addEventListener("dragleave", () => {
-  if (--dragDepth <= 0) document.body.classList.remove("dragging");
+document.addEventListener("dragover", (ev) => {
+  if (hasFiles(ev)) ev.preventDefault();
+});
+document.addEventListener("dragleave", (ev) => {
+  if (!hasFiles(ev)) return;
+  if (--dragDepth <= 0) {
+    dragDepth = 0;
+    document.body.classList.remove("dragging");
+  }
 });
 document.addEventListener("drop", (ev) => {
+  if (!hasFiles(ev)) return;
   ev.preventDefault();
   dragDepth = 0;
   document.body.classList.remove("dragging");
-  addFiles([...ev.dataTransfer.files]);
+  const cell = desktopController?.cellAt
+    ? desktopController.cellAt(ev.clientX, ev.clientY)
+    : null;
+  addFiles([...ev.dataTransfer.files], cell);
 });
 function tick() {
-  $("#clock").textContent = new Date().toLocaleTimeString("tr-TR", {
+  const locale = lang === "tr" ? "tr-TR" : "en-US";
+  $("#clock").textContent = new Date().toLocaleTimeString(locale, {
     hour: "2-digit",
     minute: "2-digit",
   });
@@ -832,6 +873,67 @@ function scheduleNativeSave() {
       .catch((err) => notify(err.message));
   }, 350);
 }
+// Tray Language indicator & dropdown
+const trayLang = $("#trayLang");
+const trayLangCode = $("#trayLangCode");
+const langMenu = $("#langMenu");
+const checkEn = $("#checkEn");
+const checkTr = $("#checkTr");
+if (trayLang && langMenu) {
+  trayLangCode.textContent = lang.toUpperCase();
+  if (checkEn) checkEn.textContent = lang === "en" ? "✓" : "";
+  if (checkTr) checkTr.textContent = lang === "tr" ? "✓" : "";
+  trayLang.onclick = (ev) => {
+    ev.stopPropagation();
+    langMenu.hidden = !langMenu.hidden;
+    trayLang.setAttribute("aria-expanded", String(!langMenu.hidden));
+  };
+  langMenu.querySelectorAll("[data-lang]").forEach((b) => {
+    b.onclick = () => setLanguage(b.dataset.lang);
+  });
+  document.addEventListener("pointerdown", (ev) => {
+    if (!ev.target.closest("#langMenu") && !ev.target.closest("#trayLang")) {
+      langMenu.hidden = true;
+      trayLang.setAttribute("aria-expanded", "false");
+    }
+  });
+}
+
+// XP Balloon Tooltip
+const trayBalloon = $("#trayBalloon");
+const balloonClose = $("#balloonClose");
+const balloonTitle = $("#balloonTitle");
+const balloonMessage = $("#balloonMessage");
+const balloonActions = $("#balloonActions");
+let balloonTimer = null;
+function showBalloon({ title, message, actions = [] }) {
+  if (!trayBalloon) return;
+  clearTimeout(balloonTimer);
+  balloonTitle.textContent = title;
+  balloonMessage.textContent = message;
+  balloonActions.replaceChildren();
+  for (const a of actions) {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.textContent = a.label;
+    btn.onclick = () => {
+      trayBalloon.hidden = true;
+      a.action();
+    };
+    balloonActions.append(btn);
+  }
+  trayBalloon.hidden = false;
+  balloonTimer = setTimeout(() => {
+    trayBalloon.hidden = true;
+  }, 7000);
+}
+if (balloonClose) {
+  balloonClose.onclick = () => {
+    trayBalloon.hidden = true;
+    clearTimeout(balloonTimer);
+  };
+}
+
 if (native) {
   const state = await native.state();
   for (const e of state.entries) {
@@ -854,10 +956,9 @@ if (native) {
       }
     }
   }
-  const tray = $(".tray");
   for (const [label, fn] of [
-    ["İşlem geçmişi", () => nativeUI.jobs()],
-    ["Bileşenler", () => nativeUI.packages()],
+    [t("job_history"), () => nativeUI.jobs()],
+    [t("components"), () => nativeUI.packages()],
   ]) {
     const b = document.createElement("button");
     b.textContent = label;
@@ -867,25 +968,61 @@ if (native) {
     };
     $("#startMenu .start-places").append(b);
   }
-  const status = document.createElement("button");
-  status.className = "task-button";
-  status.hidden = true;
-  tray.before(status);
-  status.onclick = () => nativeUI.jobs();
+  const trayJobs = $("#trayJobs");
+  const trayJobsCount = $("#trayJobsCount");
+  if (trayJobs) {
+    trayJobs.onclick = () => nativeUI.jobs();
+  }
+  const knownJobs = new Map();
   const updateStatus = async () => {
     const state = await native.state();
-    const count = state.jobs.filter((j) =>
+    const active = state.jobs.filter((j) =>
       ["running", "queued", "validating"].includes(j.status),
-    ).length;
-    status.hidden = !count;
-    status.textContent = count + " işlem sürüyor";
+    );
+    if (trayJobs) {
+      trayJobs.hidden = !active.length;
+      trayJobsCount.textContent = String(active.length);
+      trayJobs.title = t("tray_jobs_tooltip", { count: active.length });
+      trayJobs.setAttribute(
+        "aria-label",
+        t("tray_jobs_tooltip", { count: active.length }),
+      );
+    }
+    for (const j of state.jobs) {
+      const prev = knownJobs.get(j.id);
+      if (prev && ["running", "queued", "validating"].includes(prev.status)) {
+        if (j.status === "completed" && j.outputs?.length) {
+          const out = state.entries.find((e) => e.id === j.outputs[0]);
+          const outName = out ? out.name : "output.pdf";
+          showBalloon({
+            title: t("balloon_done_title"),
+            message: `✓ ${outName}`,
+            actions: [
+              {
+                label: t("balloon_open"),
+                action: () => openFiles([j.outputs[0]]),
+              },
+              {
+                label: t("balloon_reveal"),
+                action: () => native.reveal(j.outputs[0]),
+              },
+            ],
+          });
+        } else if (["failed", "interrupted"].includes(j.status)) {
+          showBalloon({
+            title: t("balloon_failed_title"),
+            message: j.message || t("status_failed"),
+            actions: [],
+          });
+        }
+      }
+      knownJobs.set(j.id, { status: j.status });
+    }
   };
   native.onChange(() => updateStatus().catch(() => {}));
   updateStatus();
-  $(".local-note").textContent =
-    "Çalışma alanın bu cihazda saklanır. Çıktılar uygulama klasöründe korunur; Farklı kaydet ile dışarı aktar.";
-  $(".welcome-note").textContent =
-    "Görsel · PDF · Ses / video · Office · OCR · Arşiv · Metin";
+  $(".local-note").textContent = t("local_note_native");
+  $(".welcome-note").textContent = t("welcome_note_native");
   window.addEventListener("pointerup", scheduleNativeSave);
   window.addEventListener("cxp-edit", scheduleNativeSave);
   if (state.warning) notify(state.warning);

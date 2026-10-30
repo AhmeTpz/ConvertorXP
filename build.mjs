@@ -14,6 +14,7 @@ for (const file of [
   "file-utils.js",
   "native-ui.js",
   "conversion-ui.js",
+  "i18n.js",
 ])
   await copyFile(file, `dist/${file}`);
 console.log("Static build ready: dist/");

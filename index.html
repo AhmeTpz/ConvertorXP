@@ -1,45 +1,75 @@
 <!doctype html>
-<html lang="tr">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>ConvertorXP — kişisel dosya masaüstün</title>
+    <title>ConvertorXP — your personal file desktop</title>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <main id="desktop" aria-label="Dosya masaüstü">
+    <main id="desktop" data-i18n-aria="desktop_aria" aria-label="File desktop">
       <header class="desktop-header">
         <div class="brand">
           <img class="brand-mark" src="logo.png" alt="" />
-          <div>ConvertorXP<small>Kişisel dosya masaüstün</small></div>
+          <div>
+            ConvertorXP<small data-i18n="tagline"
+              >Your personal file desktop</small
+            >
+          </div>
         </div>
-        <span class="privacy">● Dosyaların bu cihazda kalır</span>
+        <span class="privacy" data-i18n="privacy"
+          >◈ Files stay on this device</span
+        >
       </header>
       <section class="welcome" id="welcome">
-        <div class="eyebrow">ESKİ BİR HİS. YENİ BİR ARAÇ KUTUSU.</div>
-        <h1>Dosyalarını getir.<br />Gerisini sağ tıkla.</h1>
-        <p>
-          Dönüştür, boyutlandır, birleştir.<br />Hepsi senin küçük masaüstünde.
+        <div class="eyebrow" data-i18n="welcome_eyebrow">
+          CLASSIC FEEL. MODERN TOOLBOX.
+        </div>
+        <h1 data-i18n="welcome_h1" data-i18n-html="true">
+          Bring your files.<br />Right-click the rest.
+        </h1>
+        <p data-i18n="welcome_p" data-i18n-html="true">
+          Convert, resize, merge.<br />All on your personal desktop.
         </p>
-        <button class="xp-button primary" id="uploadHero">＋ Dosya yükle</button
-        ><span class="hint">veya dosyalarını buraya sürükle</span>
-        <div class="welcome-note">
+        <button
+          class="xp-button primary"
+          id="uploadHero"
+          data-i18n="welcome_btn"
+        >
+          + Add files</button
+        ><span class="hint" data-i18n="welcome_hint"
+          >or drag and drop your files here</span
+        >
+        <div
+          class="welcome-note"
+          data-i18n="welcome_note_web"
+          data-i18n-html="true"
+        >
           JPG · PNG · WEBP · BMP · AVIF
-          <span>GIF / ICO önizlenir. AVIF desteği tarayıcıya bağlıdır.</span>
+          <span>GIF / ICO preview only. AVIF depends on browser.</span>
         </div>
       </section>
-      <section id="files" class="files" aria-label="Dosyalar"></section>
+      <section
+        id="files"
+        class="files"
+        data-i18n-aria="files_aria"
+        aria-label="Files"
+      ></section>
       <aside class="desktop-guide">
-        <b>Küçük bir hatırlatma</b>
-        <p>
-          Çift tıkla aç; sağ tıkla araçlarını keşfet.<br />Birlikte işlem yapmak
-          için birkaçını seç.
+        <b data-i18n="desktop_guide_title">Quick reminder</b>
+        <p data-i18n="desktop_guide_p" data-i18n-html="true">
+          Double-click to open; right-click for tools.<br />Select multiple
+          files to process together.
         </p>
-        <span>Telefonda dosyaya dokunman yeterli.</span>
+        <span data-i18n="desktop_guide_touch"
+          >Just tap a file on touch screens.</span
+        >
       </aside>
       <div id="dropOverlay">
-        Dosyalarını masaüstüne bırak
-        <span>Birden fazla dosya seçebilirsin</span>
+        <span data-i18n="drop_overlay_h">Drop files onto the desktop</span>
+        <span data-i18n="drop_overlay_sub"
+          >You can select and drop multiple files</span
+        >
       </div>
     </main>
     <footer class="taskbar">
@@ -49,22 +79,78 @@
         aria-expanded="false"
         aria-controls="startMenu"
       >
-        <img src="logo.png" alt="" /> başlat</button
-      ><button id="upload" class="task-button">📁 Dosya yükle</button
-      ><button id="selection" class="task-button">0 dosya seçili</button>
+        <img src="logo.png" alt="" />
+        <span data-i18n="start">start</span></button
+      ><button id="upload" class="task-button" data-i18n="upload">
+        📁 Add files</button
+      ><button id="selection" class="task-button" data-i18n="selection_zero">
+        0 files selected
+      </button>
       <div
         id="windowTasks"
         class="window-tasks"
-        aria-label="Açık pencereler"
+        data-i18n-aria="windows_open"
+        aria-label="Open windows"
       ></div>
       <div class="tray">
-        <span>◈ Yerel çalışma</span><time id="clock"></time>
+        <button
+          id="trayJobs"
+          class="tray-item tray-jobs"
+          hidden
+          type="button"
+          aria-label="Running jobs"
+        >
+          <span class="tray-gear">⚙</span
+          ><span id="trayJobsCount" class="tray-badge">1</span>
+        </button>
+        <button
+          id="trayLang"
+          class="tray-item tray-lang"
+          type="button"
+          aria-expanded="false"
+          aria-controls="langMenu"
+          title="Language / Dil"
+        >
+          <span class="tray-lang-kbd">⌨</span
+          ><strong id="trayLangCode">EN</strong>
+        </button>
+        <time id="clock"></time>
       </div>
     </footer>
+    <div id="trayBalloon" class="xp-balloon" hidden role="status">
+      <button
+        type="button"
+        id="balloonClose"
+        class="balloon-close"
+        aria-label="Close"
+      >
+        ×
+      </button>
+      <div class="balloon-header">
+        <span class="balloon-icon">🛈</span>
+        <strong id="balloonTitle"></strong>
+      </div>
+      <p id="balloonMessage"></p>
+      <div id="balloonActions" class="balloon-actions"></div>
+    </div>
+    <nav
+      id="langMenu"
+      class="xp-menu lang-menu"
+      hidden
+      aria-label="Language selection"
+    >
+      <button type="button" data-lang="en">
+        <span class="check" id="checkEn">✓</span> English (United States)
+      </button>
+      <button type="button" data-lang="tr">
+        <span class="check" id="checkTr"></span> Türkçe (Türkiye)
+      </button>
+    </nav>
     <section
       id="startMenu"
       class="start-menu"
-      aria-label="Başlat menüsü"
+      data-i18n-aria="start_menu_aria"
+      aria-label="Start menu"
       hidden
     >
       <div class="start-profile">
@@ -74,54 +160,74 @@
         <div class="start-programs">
           <button data-start="upload">
             <span class="xp-icon folder-icon"></span
-            ><span><b>Dosya yükle</b><small>Masaüstüne dosya ekle</small></span>
+            ><span
+              ><b data-i18n="start_upload">Add files</b
+              ><small data-i18n="start_upload_sub"
+                >Add files to desktop</small
+              ></span
+            >
           </button>
           <div class="start-separator"></div>
           <button data-start="convert">
             <span class="xp-icon picture-icon"></span
             ><span
-              ><b>Görsel dönüştürücü</b><small>PNG, JPG ve WebP</small></span
+              ><b data-i18n="start_convert">Image converter</b
+              ><small data-i18n="start_convert_sub"
+                >PNG, JPG and WebP</small
+              ></span
             >
           </button>
           <button data-start="resize">
-            <span class="xp-icon picture-icon"></span><span>Boyutlandır</span>
+            <span class="xp-icon picture-icon"></span
+            ><span data-i18n="start_resize">Resize</span>
           </button>
           <button data-start="rotate">
             <span class="xp-icon picture-icon"></span
-            ><span>Görselleri döndür</span>
+            ><span data-i18n="start_rotate">Rotate images</span>
           </button>
           <button data-start="merge">
             <span class="xp-icon folder-icon"></span
-            ><span>Görselleri birleştir</span>
+            ><span data-i18n="start_merge">Merge images</span>
           </button>
           <div class="start-separator"></div>
-          <p class="start-help">
-            İşlem yapmak için önce masaüstündeki dosyalarını seç.
+          <p class="start-help" data-i18n="start_help_text">
+            Select files on desktop to perform actions.
           </p>
         </div>
         <div class="start-places">
           <button data-start="desktop">
-            <span class="xp-icon folder-icon"></span><b>Dosyalarım</b>
+            <span class="xp-icon folder-icon"></span
+            ><b data-i18n="start_desktop">My Files</b>
           </button>
           <button data-start="select">
-            <span class="xp-icon folder-icon"></span><b>Tüm dosyaları seç</b>
+            <span class="xp-icon folder-icon"></span
+            ><b data-i18n="start_select_all">Select all files</b>
           </button>
           <div class="start-separator"></div>
           <button data-start="info">
-            <span class="small-system-icon">ⓘ</span>Dosya özellikleri
+            <span class="small-system-icon">ⓘ</span
+            ><span data-i18n="start_info">File properties</span>
           </button>
           <button data-start="help">
-            <span class="small-system-icon">?</span>Yardım ve destek
+            <span class="small-system-icon">?</span
+            ><span data-i18n="start_help">Help and support</span>
           </button>
-          <p class="local-note">
-            Dosyaların bu cihazda işlenir.<br /><br />Sayfayı yenilemeden önce
-            çıktılarını indir.
+          <p
+            class="local-note"
+            data-i18n="local_note_web"
+            data-i18n-html="true"
+          >
+            Files are processed on your device.<br /><br />Download outputs
+            before refreshing.
           </p>
         </div>
       </div>
       <div class="start-bottom">
-        <span>ConvertorXP · Yerel çalışma</span
-        ><button data-start="close">Menüyü kapat <span>❯</span></button>
+        <span id="startBottomVersion" data-i18n="version_label"
+          >ConvertorXP v0.5.0</span
+        ><button data-start="close">
+          <span data-i18n="start_close">Close menu</span> <span>❯</span>
+        </button>
       </div>
     </section>
     <input type="file" id="fileInput" multiple hidden />
@@ -135,15 +241,24 @@
       <form id="operationForm">
         <div class="titlebar">
           <span id="windowTitle"></span
-          ><button type="button" id="closeWindow" aria-label="Pencereyi kapat">
-            ×
-          </button>
+          ><button type="button" id="closeWindow" aria-label="Close">×</button>
         </div>
         <div id="windowBody" class="window-body"></div>
         <div class="window-footer">
-          <button type="button" id="cancel" class="xp-button">Vazgeç</button
-          ><button id="execute" class="xp-button primary" type="submit">
-            Uygula
+          <button
+            type="button"
+            id="cancel"
+            class="xp-button"
+            data-i18n="btn_cancel"
+          >
+            Cancel</button
+          ><button
+            id="execute"
+            class="xp-button primary"
+            type="submit"
+            data-i18n="btn_apply"
+          >
+            Apply
           </button>
         </div>
       </form>

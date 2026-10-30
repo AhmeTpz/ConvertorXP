@@ -6,6 +6,8 @@ import {
   copyName,
   detectImage,
 } from "../file-utils.js";
+import { cellsFrom } from "../desktop.js";
+import { dict, t } from "../i18n.js";
 test("rename keeps the extension and rejects ambiguous names", () => {
   assert.deepEqual(splitName("photo.final.png"), {
     stem: "photo.final",
@@ -52,4 +54,26 @@ test("PNG animation detection reads chunks rather than arbitrary payload strings
   assert.equal(detectImage(png).previewOnly, false);
   png.set([97, 99, 84, 76], 12);
   assert.equal(detectImage(png).previewOnly, true);
+});
+test("cellsFrom allocates consecutive free cells wrapping around cols", () => {
+  const occupied = new Set(["1,1", "2,1"]);
+  const allocated = cellsFrom({ x: 1, y: 1 }, 3, occupied, 3);
+  assert.deepEqual(allocated, [
+    { x: 0, y: 2 },
+    { x: 1, y: 2 },
+    { x: 2, y: 2 },
+  ]);
+});
+test("i18n dictionary symmetry and interpolation", () => {
+  const trKeys = Object.keys(dict.tr).sort();
+  const enKeys = Object.keys(dict.en).sort();
+  assert.deepEqual(
+    trKeys,
+    enKeys,
+    "tr and en dictionaries must have identical keys",
+  );
+  assert.equal(
+    t("selection_count", { selected: 3, total: 10 }),
+    "3 / 10 files selected",
+  );
 });

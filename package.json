@@ -1,16 +1,18 @@
 {
   "name": "convertor-xp",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "node server.mjs",
     "build": "node build.mjs",
     "format": "prettier --write \"*.{js,mjs,html,css}\" \"native/**/*.{mjs,cjs}\" \"shared/**/*.js\" \"scripts/**/*.mjs\" \"tests/**/*.mjs\"",
-    "check": "node --check app.js && node --check desktop.js && node --check windows.js && node --check viewers.js && node --check editor.js && node --check image-engine.js && node --check file-utils.js",
+    "check": "node --check app.js && node --check desktop.js && node --check windows.js && node --check viewers.js && node --check editor.js && node --check image-engine.js && node --check file-utils.js && node --check i18n.js",
     "test": "node --test tests/*.test.mjs",
     "desktop": "npm run build && electron .",
     "dist:win": "npm run build && npm run licenses && electron-builder --win nsis --x64",
+    "test:e2e": "npm run build && node tests/e2e/stage1.e2e.mjs",
+    "test:e2e:exe": "node tests/e2e/stage1.e2e.mjs --exe",
     "check:native": "node scripts/check-native.mjs",
     "test:desktop": "electron scripts/test-desktop.mjs",
     "test:matrix": "node scripts/verify-matrix.mjs",
@@ -33,6 +35,7 @@
   "devDependencies": {
     "electron": "^45.1.0",
     "electron-builder": "^26.18.0",
+    "playwright": "^1.64.1",
     "prettier": "^3.9.10"
   },
   "description": "Yerel dosya masaüstü ve dönüştürme araçları",

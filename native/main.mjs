@@ -125,14 +125,16 @@ async function serve(request) {
     return new Response("Dosya okunamadı", { status: 404 });
   }
 }
+function trusted(event) {
+  return (
+    event.sender === win.webContents &&
+    event.senderFrame === win.webContents.mainFrame &&
+    event.senderFrame.url === "cxp://app/index.html"
+  );
+}
 function handler(name, fn) {
   ipcMain.handle("cxp:" + name, async (event, ...args) => {
-    if (
-      event.sender !== win.webContents ||
-      event.senderFrame !== win.webContents.mainFrame ||
-      event.senderFrame.url !== "cxp://app/index.html"
-    )
-      throw Error("Yetkisiz çağrı.");
+    if (!trusted(event)) throw Error("Yetkisiz çağrı.");
     return fn(...args);
   });
 }
@@ -262,6 +264,43 @@ app
         if (!["utf8", "utf16le", "windows1254"].includes(encoding))
           throw Error("Kodlama geçersiz.");
         return iconv.decode(await fs.readFile(e.path), encoding);
+      });
+      ipcMain.on("cxp:startDrag", async (event, ids) => {
+        if (
+          !trusted(event) ||
+          !Array.isArray(ids) ||
+          !ids.length ||
+          ids.length > 200
+        )
+          return;
+        const targetEntries = ids
+          .map((id) => store.entries.get(id))
+          .filter((e) => e && !e.missing);
+        if (!targetEntries.length) return;
+        const dragDir = path.join(app.getPath("userData"), "drag-staging");
+        await fs.mkdir(dragDir, { recursive: true });
+        const dragFiles = [];
+        for (const e of targetEntries) {
+          const staged = path.join(dragDir, e.name);
+          await fs.rm(staged, { force: true });
+          try {
+            await fs.link(e.path, staged);
+          } catch {
+            await fs.copyFile(e.path, staged);
+          }
+          dragFiles.push(staged);
+        }
+        let icon;
+        try {
+          icon = await app.getFileIcon(dragFiles[0]);
+        } catch {
+          icon = path.join(resources, "icon.ico");
+        }
+        event.sender.startDrag({
+          file: dragFiles[0],
+          files: dragFiles,
+          icon,
+        });
       });
       win = new BrowserWindow({
         width: 1280,

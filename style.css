@@ -1814,6 +1814,30 @@ a:focus-visible {
   background: #fff;
   border: 1px solid #a5a395;
   overflow-wrap: anywhere;
+  user-select: none;
+  position: relative;
+}
+.conversion-page[draggable="true"] {
+  cursor: grab;
+}
+.conversion-page.dragging-card {
+  opacity: 0.45;
+}
+.conversion-page.drop-before::before,
+.conversion-page.drop-after::after {
+  content: "";
+  position: absolute;
+  top: -2px;
+  bottom: -2px;
+  width: 4px;
+  background: #316ac5;
+  border-radius: 2px;
+}
+.conversion-page.drop-before::before {
+  left: -9px;
+}
+.conversion-page.drop-after::after {
+  right: -9px;
 }
 .conversion-page strong {
   display: block;
@@ -1853,4 +1877,191 @@ a:focus-visible {
 }
 .conversion-fields:disabled .conversion-page {
   opacity: 0.7;
+}
+
+/* System Tray Items & Language Indicator */
+.tray-item {
+  background: transparent;
+  border: 1px solid transparent;
+  color: #fff;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 5px;
+  font-size: 11px;
+  border-radius: 2px;
+  font-family: Tahoma, "Segoe UI", sans-serif;
+  height: 22px;
+}
+.tray-item:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+.tray-jobs {
+  position: relative;
+  font-size: 12px;
+}
+.tray-gear {
+  display: inline-block;
+  animation: traySpin 4s linear infinite;
+}
+@keyframes traySpin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+.tray-badge {
+  background: #ff5533;
+  color: white;
+  font-size: 9px;
+  font-weight: bold;
+  padding: 0 4px;
+  border-radius: 6px;
+  line-height: 12px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+.tray-lang {
+  background: #0f58a8;
+  border: 1px solid #38b9f2;
+  box-shadow: inset 1px 1px 0 rgba(0, 0, 0, 0.25);
+  font-weight: bold;
+}
+.tray-lang:hover {
+  background: #186ac5;
+}
+.tray-lang-kbd {
+  font-size: 11px;
+  opacity: 0.9;
+}
+.lang-menu {
+  position: fixed;
+  z-index: 10005;
+  bottom: 34px;
+  right: 50px;
+  background: #fff;
+  border: 1px solid #aca899;
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.25);
+  padding: 2px;
+  min-width: 190px;
+  font-family: Tahoma, "Segoe UI", sans-serif;
+}
+.lang-menu button {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 4px 8px;
+  border: 0;
+  background: transparent;
+  color: #000;
+  font-size: 11px;
+  text-align: left;
+  cursor: pointer;
+}
+.lang-menu button .check {
+  display: inline-block;
+  width: 18px;
+  font-weight: bold;
+}
+.lang-menu button:hover,
+.lang-menu button:focus-visible {
+  background: #316ac5;
+  color: #fff;
+  outline: none;
+}
+
+/* XP Balloon Tooltip */
+.xp-balloon {
+  position: fixed;
+  bottom: 38px;
+  right: 20px;
+  z-index: 10006;
+  width: 260px;
+  background: #ffffe1;
+  color: #000;
+  border: 1px solid #000;
+  border-radius: 6px;
+  padding: 8px 12px 10px;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+  font-family: Tahoma, "Segoe UI", sans-serif;
+  font-size: 11px;
+  animation: balloonPop 0.2s ease-out;
+}
+.xp-balloon::after {
+  content: "";
+  position: absolute;
+  bottom: -8px;
+  right: 50px;
+  border-width: 8px 8px 0 0;
+  border-style: solid;
+  border-color: #ffffe1 transparent transparent transparent;
+}
+.xp-balloon::before {
+  content: "";
+  position: absolute;
+  bottom: -9px;
+  right: 49px;
+  border-width: 9px 9px 0 0;
+  border-style: solid;
+  border-color: #000 transparent transparent transparent;
+}
+@keyframes balloonPop {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.balloon-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+  color: #0c327d;
+  font-size: 12px;
+}
+.balloon-icon {
+  font-size: 13px;
+}
+.balloon-close {
+  position: absolute;
+  top: 4px;
+  right: 6px;
+  background: transparent;
+  border: 0;
+  font-size: 13px;
+  line-height: 1;
+  color: #666;
+  cursor: pointer;
+  padding: 2px;
+}
+.balloon-close:hover {
+  color: #000;
+}
+.xp-balloon p {
+  margin: 4px 0 8px;
+  line-height: 1.4;
+  word-break: break-word;
+}
+.balloon-actions {
+  display: flex;
+  gap: 10px;
+}
+.balloon-actions button {
+  background: transparent;
+  border: 0;
+  color: #0044cc;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 0;
+  font-size: 11px;
+}
+.balloon-actions button:hover {
+  color: #002277;
 }

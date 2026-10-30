@@ -1,4 +1,5 @@
 import { pdfLayout, isOffice } from "./shared/pdf-layout.js";
+import { t } from "./i18n.js";
 
 export function createConversions({
   native,
@@ -91,6 +92,7 @@ export function createConversions({
             rows.set(j.id, row);
           }
           row.signature = signature;
+          row.el.dataset.status = j.status;
           row.el.replaceChildren();
           const names = j.inputIds
             .map(
@@ -99,20 +101,20 @@ export function createConversions({
             .join(", ");
           element("strong", row.el, names);
           const labels = {
-            queued: "Önceki işlem tamamlanınca başlayacak.",
-            running: "Belge hazırlanıyor…",
-            validating: "Çıktı doğrulanıyor…",
-            completed: "Tamamlandı",
-            failed: "İşlem tamamlanamadı",
-            cancelled: "İptal edildi",
-            interrupted: "İşlem yarım kaldı",
+            queued: t("status_queued"),
+            running: t("status_running"),
+            validating: t("status_validating"),
+            completed: t("status_completed"),
+            failed: t("status_failed"),
+            cancelled: t("status_cancelled"),
+            interrupted: t("status_interrupted"),
           };
           element("p", row.el, labels[j.status] || j.status);
           if (j.message) element("p", row.el, j.message);
           if (["queued", "running", "validating"].includes(j.status))
-            button(row.el, "İptal", () => native.cancel(j.id));
+            button(row.el, t("btn_cancel_job"), () => native.cancel(j.id));
           if (["failed", "cancelled", "interrupted"].includes(j.status))
-            button(row.el, "Yeniden dene", async () => {
+            button(row.el, t("btn_retry"), async () => {
               const next = j.preview
                 ? await native.previewDocument(j.inputIds[0])
                 : await native.retry(j.id);
@@ -125,9 +127,11 @@ export function createConversions({
             if (!output) continue;
             element("p", row.el, output.name);
             if (output.ext === "pdf")
-              button(row.el, "Önizle", () => showPDF(record, output));
-            button(row.el, "Farklı kaydet", () => native.saveAs(id));
-            button(row.el, "Klasörde göster", () => native.reveal(id));
+              button(row.el, t("btn_preview"), () => showPDF(record, output));
+            button(row.el, t("btn_save_as"), () =>
+              native.saveAs(id),
+            ).dataset.action = "save-as";
+            button(row.el, t("btn_reveal"), () => native.reveal(id));
           }
           if (j.previewURL && !row.opened) {
             row.opened = true;
@@ -221,7 +225,7 @@ export function createConversions({
     const { record } = manager.open(
       {
         id: "system-convert-" + crypto.randomUUID(),
-        name: office ? "PDF’ye dönüştür" : "Görsellerden PDF",
+        name: office ? t("btn_convert_pdf") : t("btn_create_pdf"),
       },
       { width: 800, height: 660 },
     );
@@ -229,13 +233,7 @@ export function createConversions({
     const form = element("form", record.content),
       fields = element("fieldset", form);
     fields.className = "conversion-fields";
-    element(
-      "p",
-      fields,
-      office
-        ? "Her belge ayrı PDF olur. Font ve yerleşim farkları olabilir. Excel mevcut yazdırma alanlarını kullanır."
-        : "Fotoğrafları sürükleyerek sırala. Her görsel bir sayfa olur; kaynaklar korunur.",
-    );
+    element("p", fields, office ? t("pdf_office_desc") : t("pdf_image_desc"));
     const options = {
       paper: "A4",
       orientation: "auto",
@@ -249,29 +247,29 @@ export function createConversions({
       for (const [key, label, values] of [
         [
           "paper",
-          "Sayfa",
+          t("paper_label"),
           [
             ["A4", "A4"],
             ["A5", "A5"],
             ["Letter", "Letter"],
-            ["image", "Görsel boyutu (96 DPI)"],
+            ["image", t("paper_image")],
           ],
         ],
         [
           "orientation",
-          "Yön",
+          t("orientation_label"),
           [
-            ["auto", "Otomatik"],
-            ["portrait", "Dikey"],
-            ["landscape", "Yatay"],
+            ["auto", t("orient_auto")],
+            ["portrait", t("orient_portrait")],
+            ["landscape", t("orient_landscape")],
           ],
         ],
         [
           "output",
-          "Çıktı",
+          t("output_label"),
           [
-            ["combined", "Tek PDF"],
-            ["separate", "Ayrı PDF’ler"],
+            ["combined", t("output_combined")],
+            ["separate", t("output_separate")],
           ],
         ],
       ]) {
@@ -287,7 +285,7 @@ export function createConversions({
           renderPages();
         };
       }
-      const l = element("label", settings, "Kenar boşluğu (mm)"),
+      const l = element("label", settings, t("margin_label")),
         input = element("input", l);
       input.type = "number";
       input.min = 0;
@@ -302,11 +300,23 @@ export function createConversions({
     const pages = element("div", fields);
     pages.className = "conversion-pages";
     let dragging;
+    const clearMarks = () =>
+      pages
+        .querySelectorAll(".drop-before,.drop-after,.dragging-card")
+        .forEach((el) =>
+          el.classList.remove("drop-before", "drop-after", "dragging-card"),
+        );
+    // Insert before or after the hovered card depending on the pointer half.
+    const after = (card, ev) => {
+      const r = card.getBoundingClientRect();
+      return ev.clientX > r.left + r.width / 2;
+    };
     renderPages = () => {
       pages.replaceChildren();
       for (const [index, file] of files.entries()) {
         const card = element("section", pages);
         card.className = "conversion-page";
+        card.dataset.id = file.id;
         card.draggable = images;
         card.ondragstart = (ev) => {
           if (fields.disabled) {
@@ -315,18 +325,37 @@ export function createConversions({
           }
           ev.stopPropagation();
           dragging = file.id;
-          ev.dataTransfer.setData("text/plain", file.id);
+          ev.dataTransfer.effectAllowed = "move";
+          ev.dataTransfer.setData("application/x-cxp-page", file.id);
+          card.classList.add("dragging-card");
+        };
+        card.ondragend = () => {
+          dragging = null;
+          clearMarks();
         };
         card.ondragover = (ev) => {
-          if (images) ev.preventDefault();
+          if (!images || !dragging) return;
+          ev.preventDefault();
+          ev.dataTransfer.dropEffect = "move";
+          const isAfter = after(card, ev);
+          card.classList.toggle("drop-after", isAfter);
+          card.classList.toggle("drop-before", !isAfter);
         };
+        card.ondragleave = () =>
+          card.classList.remove("drop-before", "drop-after");
         card.ondrop = (ev) => {
           ev.preventDefault();
           ev.stopPropagation();
-          if (fields.disabled) return;
+          const isAfter = after(card, ev);
+          clearMarks();
+          if (fields.disabled || !dragging) return;
           const from = files.findIndex((e) => e.id === dragging);
-          if (from < 0) return;
-          files.splice(index, 0, files.splice(from, 1)[0]);
+          dragging = null;
+          if (from < 0 || from === index) return;
+          const [moved] = files.splice(from, 1);
+          let to = files.findIndex((e) => e.id === file.id);
+          if (isAfter) to++;
+          files.splice(to, 0, moved);
           renderPages();
         };
         element("strong", card, `${index + 1}. ${file.name}`);
@@ -372,7 +401,7 @@ export function createConversions({
               renderPages();
             }
           }).setAttribute("aria-label", "Arkaya taşı: " + file.name);
-          button(actions, "Çıkar", () => {
+          button(actions, t("btn_remove_page"), () => {
             files.splice(index, 1);
             renderPages();
           });
@@ -383,7 +412,7 @@ export function createConversions({
     const submit = element(
       "button",
       fields,
-      office ? "PDF’ye dönüştür" : "PDF oluştur",
+      office ? t("btn_convert_pdf") : t("btn_create_pdf"),
     );
     submit.className = "xp-button primary";
     submit.type = "submit";
