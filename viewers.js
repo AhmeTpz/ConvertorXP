@@ -1,5 +1,6 @@
 import { isOffice } from "./shared/pdf-layout.js";
 import { mountPdfWorkspace } from "./pdf-workspace.js";
+import { mountPaintWorkspace } from "./paint-workspace.js";
 import { mountEditor } from "./editor.js";
 export function viewerType(file) {
   const ext = file.name.split(".").pop().toLowerCase();
@@ -57,9 +58,9 @@ export async function mountViewer(record, entry, services) {
       if (record.closed) return;
       entry.file = new File([blob], entry.name, { type: entry.type });
     }
-    const dispose = await mountEditor(host, entry, services);
+    const dispose = await mountPaintWorkspace(host, entry, services);
     const cleanup = () => {
-      dispose();
+      dispose?.();
       if (entry.native)
         entry.file = {
           name: entry.name,

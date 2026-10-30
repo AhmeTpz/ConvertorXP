@@ -16,6 +16,8 @@ for (const file of [
   "conversion-ui.js",
   "i18n.js",
   "pdf-workspace.js",
+  "paint-workspace.js",
+  "collage-engine.js",
 ])
   await copyFile(file, `dist/${file}`);
 console.log("Static build ready: dist/");
@@ -29,4 +31,8 @@ for (const f of ["pdf.mjs", "pdf.worker.mjs"])
 await copyFile(
   "node_modules/pdf-lib/dist/pdf-lib.esm.min.js",
   "dist/vendor/pdf-lib.mjs",
+);
+await copyFile(
+  "node_modules/fabric/dist/index.min.mjs",
+  "dist/vendor/fabric.mjs",
 );

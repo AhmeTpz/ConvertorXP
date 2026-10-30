@@ -1937,14 +1937,6 @@ a:focus-visible {
   position: relative;
   user-select: none;
 }
-.band-gripper {
-  display: inline-block;
-  width: 3px;
-  height: 22px;
-  margin: 0 3px 0 4px;
-  border-left: 1px solid #164ca3;
-  border-right: 1px solid #64a1ff;
-}
 .taskbar-lang {
   height: 100%;
   background: transparent;
@@ -1953,7 +1945,8 @@ a:focus-visible {
   font-family: Tahoma, "Segoe UI", sans-serif;
   font-size: 11px;
   font-weight: bold;
-  padding: 0 8px;
+  letter-spacing: 0.5px;
+  padding: 0 10px 0 12px;
   margin: 0;
   cursor: pointer;
   display: inline-flex;
@@ -1967,11 +1960,9 @@ a:focus-visible {
 .taskbar-lang:hover,
 .taskbar-lang[aria-expanded="true"] {
   background: rgba(255, 255, 255, 0.16);
-  box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0.2);
 }
 .taskbar-lang:active {
-  background: rgba(0, 0, 0, 0.2);
-  box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.4);
+  background: rgba(0, 0, 0, 0.22);
 }
 .tray-shield {
   display: inline-flex;
@@ -2386,4 +2377,359 @@ a:focus-visible {
 .status-dirty.dirty {
   color: #c00000;
   font-weight: bold;
+}
+
+/* ============================================================
+   Stage 4: Windows XP Paint & Collage Studio (v0.8.0)
+   ============================================================ */
+.xp-paint-studio {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  background: #ece9d8;
+  font-family: Tahoma, "Segoe UI", sans-serif;
+  user-select: none;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Paint Menu Bar */
+.xp-paint-menubar {
+  height: 24px;
+  background: #ece9d8;
+  border-bottom: 1px solid #d4cfbe;
+  display: flex;
+  align-items: center;
+  padding: 0 4px;
+  font-size: 11px;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 50;
+}
+.paint-menu-item {
+  position: relative;
+  padding: 2px 7px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  border-radius: 2px;
+}
+.paint-menu-item:hover,
+.paint-menu-item:focus-within,
+.paint-menu-item.open {
+  border-color: #316ac5;
+  background: #b6bdd2;
+}
+.paint-dropdown {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: #ffffff;
+  border: 1px solid #7f9db9;
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.25);
+  min-width: 170px;
+  padding: 2px 0;
+  z-index: 100;
+}
+.paint-menu-item:hover .paint-dropdown,
+.paint-menu-item:focus-within .paint-dropdown,
+.paint-menu-item.open .paint-dropdown {
+  display: block;
+}
+.paint-dropdown button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  border: 0;
+  background: transparent;
+  padding: 4px 14px;
+  font-family: Tahoma, "Segoe UI", sans-serif;
+  font-size: 11px;
+  cursor: pointer;
+  color: #000;
+  white-space: nowrap;
+}
+.paint-dropdown button:hover {
+  background: #316ac5;
+  color: #ffffff;
+}
+.paint-menubar-right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  padding-right: 4px;
+}
+.save-copy-top {
+  height: 21px;
+  padding: 0 10px;
+  font-size: 11px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Collage Bar */
+.xp-collage-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #f0eee4;
+  border-bottom: 1px solid #aca899;
+  padding: 4px 8px;
+  flex-shrink: 0;
+  overflow-x: auto;
+  font-size: 11px;
+}
+.collage-templates {
+  display: flex;
+  gap: 3px;
+}
+.collage-tpl-btn {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 6px;
+  border: 1px solid #7f9db9;
+  border-radius: 2px;
+  background: linear-gradient(#ffffff, #ece9d8);
+  cursor: pointer;
+  font-size: 10px;
+  line-height: 1.1;
+  min-width: 38px;
+}
+.collage-tpl-btn:hover {
+  border-color: #316ac5;
+}
+.collage-tpl-btn.active {
+  background: #316ac5;
+  color: #ffffff;
+  border-color: #1647a0;
+}
+.collage-control {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  white-space: nowrap;
+}
+.collage-control input[type="range"] {
+  width: 65px;
+  height: 14px;
+}
+.collage-control output {
+  min-width: 28px;
+  font-family: Tahoma, monospace;
+}
+.collage-control select {
+  font-family: Tahoma, sans-serif;
+  font-size: 11px;
+  padding: 1px 3px;
+  border: 1px solid #7f9db9;
+}
+.collage-control input[type="color"] {
+  width: 22px;
+  height: 20px;
+  padding: 0;
+  border: 1px solid #7f9db9;
+  cursor: pointer;
+}
+
+/* Paint Body */
+.xp-paint-body {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Toolbox */
+.xp-paint-toolbox {
+  width: 58px;
+  background: #ece9d8;
+  border-right: 1px solid #aca899;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 4px 2px;
+  flex-shrink: 0;
+}
+.tools-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 25px);
+  gap: 2px;
+  justify-content: center;
+}
+.tool-btn {
+  width: 25px;
+  height: 25px;
+  border: 1px solid #aca899;
+  border-radius: 2px;
+  background: linear-gradient(#ffffff, #ece9d8);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  padding: 0;
+  line-height: 1;
+}
+.tool-btn:hover {
+  background: #ffffff;
+  border-color: #316ac5;
+}
+.tool-btn.active {
+  background: #d4dceb;
+  border-color: #1647a0;
+  box-shadow: inset 1px 1px 1px rgba(0, 0, 0, 0.35);
+}
+
+/* Tool Options Pane */
+.tool-options-pane {
+  width: 48px;
+  height: 66px;
+  margin-top: 6px;
+  border: 1px inset #aca899;
+  background: #ffffff;
+  padding: 2px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  box-sizing: border-box;
+}
+.stroke-width-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.stroke-opt {
+  height: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 1px;
+}
+.stroke-opt span {
+  display: block;
+  width: 36px;
+  background: #000000;
+}
+.stroke-opt.active {
+  background: #316ac5;
+}
+.stroke-opt.active span {
+  background: #ffffff;
+}
+.shape-fill-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.fill-opt {
+  height: 16px;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 1px;
+}
+.fill-opt.active {
+  background: #316ac5;
+  color: #ffffff;
+}
+
+/* Viewport & Stage */
+.xp-paint-viewport {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  background: #808080;
+  overflow: auto;
+  display: flex;
+  padding: 12px;
+  box-sizing: border-box;
+}
+.xp-paint-stage {
+  background: #ffffff;
+  box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.45);
+  position: relative;
+  margin: auto;
+  flex-shrink: 0;
+}
+.xp-paint-stage canvas {
+  display: block;
+  background: #ffffff;
+  image-rendering: auto;
+}
+
+/* Bottom Palette & Statusbar */
+.xp-paint-bottom {
+  flex-shrink: 0;
+  background: #ece9d8;
+  border-top: 1px solid #aca899;
+}
+.xp-palette {
+  display: flex;
+  align-items: center;
+  padding: 3px 6px;
+  gap: 8px;
+}
+.active-colors-box {
+  position: relative;
+  width: 28px;
+  height: 28px;
+  border: 1px inset #aca899;
+  background: #ffffff;
+  flex-shrink: 0;
+}
+.primary-color-chip {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 14px;
+  height: 14px;
+  border: 1px solid #000000;
+  z-index: 2;
+  box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3);
+}
+.secondary-color-chip {
+  position: absolute;
+  bottom: 3px;
+  right: 3px;
+  width: 14px;
+  height: 14px;
+  border: 1px solid #808080;
+  z-index: 1;
+}
+.color-grid {
+  display: grid;
+  grid-template-columns: repeat(14, 15px);
+  grid-template-rows: repeat(2, 15px);
+  gap: 1px;
+  background: #808080;
+  padding: 1px;
+  border: 1px inset #aca899;
+}
+.color-box {
+  width: 15px;
+  height: 15px;
+  cursor: pointer;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  box-sizing: border-box;
+}
+.color-box:hover {
+  outline: 1px solid #ffffff;
+}
+.xp-paint-statusbar {
+  display: flex;
+  justify-content: space-between;
+  background: #ece9d8;
+  border-top: 1px solid #aca899;
+  padding: 2px 8px;
+  font-size: 11px;
+  color: #000000;
 }

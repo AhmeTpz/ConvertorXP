@@ -81,11 +81,21 @@ Durum: **Doğrulandı**. Doğrulanan sürüm: **0.7.0** (E2E: `tests/e2e/stage3.
 ---
 
 ## Aşama 4 — Paint Benzeri Görsel & Kolaj Editörü
-Durum: **Bekliyor**. Hedef sürüm: 0.8.0.
-- [ ] **Fabric.js** tabanlı tuval: nesne seçme, taşıma, döndürme, yeniden boyutlandırma.
-- [ ] XP Paint araçları: seçim, çizim kalemi, silgi, metin kutusu, şekiller (dikdörtgen, elips, ok), renk paleti.
-- [ ] **Kolaj aracı:** ızgara şablonları, sürükle-bırak fotoğraf yerleştirme, kenar boşluğu ve zemin rengi.
-- [ ] Sağda sürekli erişilebilir "Kopya olarak kaydet" eylemi.
+Durum: **Doğrulandı**. Doğrulanan sürüm: **0.8.0** (E2E: `tests/e2e/stage4.e2e.mjs`, Unit: `tests/collage.test.mjs`).
+- [x] **Otantik Windows XP Paint Stüdyosu (`paint-workspace.js`):**
+  - XP 16-araçlık araç kutusu (Pencil, Brush, Airbrush, Eraser, Flood Fill, Color Picker, Magnifier, Text, Line, Curve, Rect, Rounded Rect, Ellipse, Polygon, Freeform & Rect Select).
+  - XP 28-renk çift paleti (birincil/ikincil renk göstergeleri, Tahoma 11px durum çubuğu).
+  - Kontür kalınlığı (1..8px) ve şekil dolgu modları (çerçeve, dolu, yalnızca dolgu).
+  - Geri al / Yinele (Ctrl+Z / Ctrl+Y) geçmiş yığını, 90° döndürme, yatay/dikey aynalama.
+- [x] **Çoklu Fotoğraf Kolaj Oluşturucu (`collage-engine.js`):**
+  - Masaüstünde 2+ görsel seçilip sağ tıklandığında `🖼 Kolaj Oluştur` eylemi.
+  - Otomatik ve seçilebilir ızgara şablonları: 2 Yan Yana (1x2), 2 Alt Alta (2x1), 3'lü Bölünmüş (1+2), 3 Sütun (1x3), 4 Eşit Izgara (2x2), 4'lü Üst+Alt (1+3), 6'lı Izgara (2x3).
+  - Gerçek zamanlı aralık (0..30px), köşe ovalliği (0..25px), en-boy oranı (1:1, 4:3, 16:9, 9:16) ve zemin rengi kontrolleri.
+- [x] **Otantik XP Dil Çubuğu ve Bildirim Alanı:**
+  - Dil seçici (`EN` / `TR`) bildirim alanı simgelerinin tam solunda, saf Tahoma 11px beyaz font ve ayırıcı çizgiyle kullanıcının sağladığı orijinal XP ekran görüntüsüyle birebir hizalandı.
+- [x] **Kayıpsız Kaynak Dokunulmazlığı & Anında Kopya Kaydet:**
+  - Menüde ve üst sağda sürekli görünür "Kopya Olarak Kaydet" (`#btnQuickSave`) eylemi.
+  - Orijinal fotoğrafların dosya hash'i ve bütünlüğü %100 korunur; çıktılar masaüstüne `-duzenlendi.png` veya `-kolaj.png` olarak kaydedilir ve XP sarı balonuyla bildirilir.
 
 ---
 

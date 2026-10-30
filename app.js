@@ -9,6 +9,7 @@ import {
 import { createDesktop, cellsFrom } from "./desktop.js";
 import { createWindowManager } from "./windows.js";
 import { mountViewer, viewerType } from "./viewers.js";
+import { mountPaintWorkspace } from "./paint-workspace.js";
 import { t, lang, setLanguage, applyStatic } from "./i18n.js";
 const $ = (s) => document.querySelector(s);
 applyStatic();
@@ -111,6 +112,52 @@ async function saveEdited(blob, name, width, height) {
   selected.clear();
   selected.add(e.id);
   render();
+}
+function createPaintWindow() {
+  const paintEntry = {
+    id: "paint-" + Date.now(),
+    name: "Paint - " + (lang === "tr" ? "Adsız" : "Untitled"),
+    ext: "png",
+    image: true,
+    file: new File([], "paint.png", { type: "image/png" }),
+  };
+  const { record, created } = windowManager.open(paintEntry, {
+    width: 860,
+    height: 640,
+  });
+  if (created) {
+    mountPaintWorkspace(record.content, paintEntry, {
+      save: saveEdited,
+      notify,
+      showBalloon,
+    }).catch((err) => notify(err.message));
+  }
+}
+
+function createCollageWindow(items) {
+  const collageEntry = {
+    id: "collage-" + Date.now(),
+    name: (t("collage_title") || "Kolaj") + " (" + items.length + ")",
+    ext: "png",
+    image: true,
+    file: new File([], "kolaj.png", { type: "image/png" }),
+  };
+  const { record, created } = windowManager.open(collageEntry, {
+    width: 900,
+    height: 680,
+  });
+  if (created) {
+    mountPaintWorkspace(
+      record.content,
+      collageEntry,
+      {
+        save: saveEdited,
+        notify,
+        showBalloon,
+      },
+      { collageImages: items },
+    ).catch((err) => notify(err.message));
+  }
 }
 const nativeUI = native
   ? createNativeUI({
@@ -287,6 +334,13 @@ function menu(x, y) {
         () => nativeUI.convertPDF(),
         false,
         "pdf-create",
+      );
+    if (list.length >= 2 && list.every((e) => e.image || e.isImage))
+      add(
+        t("menu_collage") || "🖼 Kolaj Oluştur",
+        () => createCollageWindow(list),
+        false,
+        "collage-create",
       );
     if (list.every((e) => e.image))
       add(t("menu_edit"), () => openFiles(list.map((e) => e.id)));
@@ -837,6 +891,10 @@ for (const button of document.querySelectorAll("[data-start]"))
     closeStart();
     if (action === "upload")
       return native ? pickNative() : $("#fileInput").click();
+    if (action === "paint") {
+      createPaintWindow();
+      return;
+    }
     if (action === "close") return $("#start").focus();
     if (action === "desktop") {
       document.querySelector(".file")?.focus();
