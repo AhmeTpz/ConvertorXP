@@ -317,6 +317,46 @@
         </div>
       </form>
     </dialog>
+    <div class="xp-ocr-modal-backdrop" id="ocrModal" hidden>
+      <div class="xp-ocr-modal">
+        <div class="modal-titlebar">
+          <span class="modal-title" data-i18n="ocr_modal_title">Metin Tanıma (OCR)</span>
+          <button type="button" class="modal-close" id="ocrClose" aria-label="Kapat">×</button>
+        </div>
+        <div class="modal-body">
+          <div class="modal-field">
+            <label>Dosya:</label>
+            <strong id="ocrTargetName">belge.pdf</strong>
+          </div>
+          <div class="modal-field">
+            <label for="ocrLanguage" data-i18n="ocr_lang_label">Tanıma Dili:</label>
+            <select id="ocrLanguage">
+              <option value="tur+eng">Türkçe + İngilizce (tur+eng)</option>
+              <option value="tur">Türkçe (tur)</option>
+              <option value="eng">İngilizce (eng)</option>
+            </select>
+          </div>
+          <div class="modal-field">
+            <label data-i18n="ocr_output_label">Çıktı Biçimi:</label>
+            <div class="ocr-radios" style="display:flex; flex-direction:column; gap:4px; margin-top:4px;">
+              <label><input type="radio" name="ocrFormat" value="notepad" checked> <span data-i18n="ocr_out_notepad">XP Not Defteri ile Aç (.txt)</span></label>
+              <label><input type="radio" name="ocrFormat" value="pdf"> <span data-i18n="ocr_out_pdf">Aranabilir PDF Olarak Kaydet (.pdf)</span></label>
+              <label><input type="radio" name="ocrFormat" value="txt"> <span data-i18n="ocr_out_txt">Metin Dosyası Olarak Kaydet (.txt)</span></label>
+            </div>
+          </div>
+          <div id="ocrProgressBox" hidden style="margin-top:10px;">
+            <div id="ocrProgressLabel" style="font-size:11px; margin-bottom:3px;">Metin tanınıyor... %0</div>
+            <div class="xp-progress-bar-wrap">
+              <div class="xp-progress-bar-fill" id="ocrProgressFill"></div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="xp-button primary" id="btnStartOcr" data-i18n="ocr_btn_start">✓ Başlat</button>
+          <button type="button" class="xp-button" id="btnCancelOcr" data-i18n="ocr_btn_cancel">Vazgeç</button>
+        </div>
+      </div>
+    </div>
     <div id="toast" role="status" hidden></div>
     <script type="module" src="app.js"></script>
   </body>

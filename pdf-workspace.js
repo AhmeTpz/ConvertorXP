@@ -98,6 +98,16 @@ export async function mountPdfWorkspace(host, entry, services) {
           <span class="icon">🔏</span> <span data-i18n="pdf_ws_add_stamp">${t("pdf_ws_add_stamp")}</span>
         </button>
         <span class="toolbar-sep" aria-hidden="true"></span>
+        <button type="button" class="xp-pdf-btn" data-act="redact" title="${t("pdf_ws_redact") || "Sansürle"}">
+          <span class="icon">⬛</span> <span data-i18n="pdf_ws_redact">${t("pdf_ws_redact") || "Sansürle"}</span>
+        </button>
+        <button type="button" class="xp-pdf-btn" data-act="replace-text" title="${t("pdf_ws_replace_text") || "Metin Değiştir"}">
+          <span class="icon">✏️</span> <span data-i18n="pdf_ws_replace_text">${t("pdf_ws_replace_text") || "Metin Değiştir"}</span>
+        </button>
+        <button type="button" class="xp-pdf-btn" data-act="ocr" title="${t("pdf_ws_ocr") || "Metni Tanı (OCR)"}">
+          <span class="icon">🔍</span> <span data-i18n="pdf_ws_ocr">${t("pdf_ws_ocr") || "OCR"}</span>
+        </button>
+        <span class="toolbar-sep" aria-hidden="true"></span>
         <div class="pdf-zoom-controls">
           <button type="button" class="xp-pdf-btn zoom-btn" data-act="zoom-out" title="${t("pdf_ws_zoom_out")}">−</button>
           <button type="button" class="xp-pdf-btn zoom-btn" data-act="zoom-fit" title="${t("pdf_ws_fit_page")}">Sığdır</button>
@@ -380,6 +390,33 @@ export async function mountPdfWorkspace(host, entry, services) {
               ann.width * zoomScale * 1.5,
               ann.height * zoomScale * 1.5,
             );
+          } else if (ann.type === "redact") {
+            ctx.fillStyle = ann.color === "black" ? "#000000" : "#ffffff";
+            ctx.fillRect(
+              ann.x * zoomScale * 1.5,
+              ann.y * zoomScale * 1.5,
+              ann.width * zoomScale * 1.5,
+              ann.height * zoomScale * 1.5,
+            );
+          } else if (ann.type === "replace") {
+            ctx.fillStyle = "#ffffff";
+            ctx.fillRect(
+              ann.x * zoomScale * 1.5,
+              ann.y * zoomScale * 1.5,
+              ann.width * zoomScale * 1.5,
+              ann.height * zoomScale * 1.5,
+            );
+            if (ann.text) {
+              ctx.fillStyle = "#000000";
+              const fSize = Math.max(10, Math.round((ann.fontSize || 13) * zoomScale * 1.5));
+              ctx.font = `${fSize}px Tahoma, sans-serif`;
+              ctx.textBaseline = "middle";
+              ctx.fillText(
+                ann.text,
+                (ann.x + 3) * zoomScale * 1.5,
+                (ann.y + ann.height / 2) * zoomScale * 1.5,
+              );
+            }
           }
         }
         ctx.restore();
@@ -426,6 +463,166 @@ export async function mountPdfWorkspace(host, entry, services) {
     annotationLayer.classList.remove("placing");
     markDirty();
     renderActivePage();
+  };
+
+  // 7.5. Redaction and Text Replacement Drag Interaction
+  let activeTool = null; // null | "redact" | "replace"
+  let dragStart = null;
+  let selectionBox = null;
+
+  function clearActiveTool() {
+    activeTool = null;
+    annotationLayer.classList.remove("redacting", "replacing");
+    q("[data-act='redact']")?.classList.remove("active");
+    q("[data-act='replace-text']")?.classList.remove("active");
+    if (selectionBox) {
+      selectionBox.remove();
+      selectionBox = null;
+    }
+    dragStart = null;
+  }
+
+  q("[data-act='redact']").onclick = () => {
+    if (activeTool === "redact") {
+      clearActiveTool();
+    } else {
+      clearActiveTool();
+      activeTool = "redact";
+      annotationLayer.classList.add("redacting");
+      q("[data-act='redact']").classList.add("active");
+      notify("Sansürlemek istediğiniz alanı fareyle sürükleyerek seçin.");
+    }
+  };
+
+  q("[data-act='replace-text']").onclick = () => {
+    if (activeTool === "replace") {
+      clearActiveTool();
+    } else {
+      clearActiveTool();
+      activeTool = "replace";
+      annotationLayer.classList.add("replacing");
+      q("[data-act='replace-text']").classList.add("active");
+      notify("Değiştirmek istediğiniz metin alanını fareyle sürükleyerek seçin.");
+    }
+  };
+
+  annotationLayer.onpointerdown = (ev) => {
+    if (!activeTool || !pages.length) return;
+    const rect = annotationLayer.getBoundingClientRect();
+    dragStart = {
+      x: ev.clientX - rect.left,
+      y: ev.clientY - rect.top,
+      clientX: ev.clientX,
+      clientY: ev.clientY,
+    };
+    selectionBox = document.createElement("div");
+    selectionBox.className = "pdf-selection-box";
+    selectionBox.style.left = dragStart.x + "px";
+    selectionBox.style.top = dragStart.y + "px";
+    selectionBox.style.width = "0px";
+    selectionBox.style.height = "0px";
+    annotationLayer.append(selectionBox);
+    try {
+      annotationLayer.setPointerCapture(ev.pointerId);
+    } catch {}
+  };
+
+  annotationLayer.onpointermove = (ev) => {
+    if (!dragStart || !selectionBox) return;
+    const rect = annotationLayer.getBoundingClientRect();
+    const currX = Math.max(0, Math.min(rect.width, ev.clientX - rect.left));
+    const currY = Math.max(0, Math.min(rect.height, ev.clientY - rect.top));
+
+    const left = Math.min(dragStart.x, currX);
+    const top = Math.min(dragStart.y, currY);
+    const width = Math.abs(currX - dragStart.x);
+    const height = Math.abs(currY - dragStart.y);
+
+    selectionBox.style.left = left + "px";
+    selectionBox.style.top = top + "px";
+    selectionBox.style.width = width + "px";
+    selectionBox.style.height = height + "px";
+  };
+
+  annotationLayer.onpointerup = (ev) => {
+    if (!dragStart) return;
+    const rect = annotationLayer.getBoundingClientRect();
+    const currX = Math.max(0, Math.min(rect.width, ev.clientX - rect.left));
+    const currY = Math.max(0, Math.min(rect.height, ev.clientY - rect.top));
+
+    const left = Math.min(dragStart.x, currX);
+    const top = Math.min(dragStart.y, currY);
+    const width = Math.abs(currX - dragStart.x);
+    const height = Math.abs(currY - dragStart.y);
+
+    if (selectionBox) {
+      selectionBox.remove();
+      selectionBox = null;
+    }
+
+    if (width > 6 && height > 6) {
+      const cur = pages[activePageIndex];
+      const normX = left / zoomScale;
+      const normY = top / zoomScale;
+      const normW = width / zoomScale;
+      const normH = height / zoomScale;
+
+      if (activeTool === "redact") {
+        cur.annotations.push({
+          type: "redact",
+          color: "black",
+          x: normX,
+          y: normY,
+          width: normW,
+          height: normH,
+        });
+        markDirty();
+        renderActivePage();
+      } else if (activeTool === "replace") {
+        const repText = window.prompt(t("redact_prompt_text") || "Değiştirilecek yeni metni girin:", "");
+        if (repText !== null) {
+          cur.annotations.push({
+            type: "replace",
+            color: "white",
+            text: repText,
+            x: normX,
+            y: normY,
+            width: normW,
+            height: normH,
+            fontSize: Math.min(Math.max(10, Math.round(normH * 0.7)), 24),
+          });
+          markDirty();
+          renderActivePage();
+        }
+      }
+    }
+    clearActiveTool();
+  };
+
+  // OCR Extraction in PDF Workspace
+  q("[data-act='ocr']").onclick = async () => {
+    try {
+      notify("Metin ayıklanıyor...");
+      let fullText = "";
+      for (const p of pages) {
+        const textContent = await p.pdfjsPage.getTextContent();
+        fullText += textContent.items.map((i) => i.str).join(" ") + "\n\n";
+      }
+      const outName = entry.name.replace(/\.pdf$/i, "") + "-ocr.txt";
+      if (window.convertorDesktop?.saveBlob) {
+        const bytes = new TextEncoder().encode(fullText);
+        await window.convertorDesktop.saveBlob(bytes, outName);
+      }
+      if (services.showBalloon) {
+        services.showBalloon({
+          title: t("balloon_done_title") || "İşlem tamamlandı",
+          message: `✓ ${outName} masaüstüne kaydedildi.`,
+        });
+      }
+      notify(`✓ ${outName} kaydedildi.`);
+    } catch (e) {
+      notify(e.message);
+    }
   };
 
   // 8. Toolbar Actions
@@ -633,6 +830,30 @@ export async function mountPdfWorkspace(host, entry, services) {
                 width: ann.width || 100,
                 height: ann.height || 50,
               });
+            } else if (ann.type === "redact") {
+              copied.drawRectangle({
+                x: Math.max(0, ann.x),
+                y: Math.max(0, copied.getHeight() - ann.y - ann.height),
+                width: Math.max(1, ann.width),
+                height: Math.max(1, ann.height),
+                color: ann.color === "black" ? rgb(0, 0, 0) : rgb(1, 1, 1),
+              });
+            } else if (ann.type === "replace") {
+              copied.drawRectangle({
+                x: Math.max(0, ann.x),
+                y: Math.max(0, copied.getHeight() - ann.y - ann.height),
+                width: Math.max(1, ann.width),
+                height: Math.max(1, ann.height),
+                color: rgb(1, 1, 1),
+              });
+              if (ann.text) {
+                copied.drawText(ann.text, {
+                  x: Math.max(0, ann.x + 2),
+                  y: Math.max(0, copied.getHeight() - ann.y - ann.height + (ann.height - (ann.fontSize || 12)) / 2),
+                  size: ann.fontSize || 12,
+                  color: rgb(0, 0, 0),
+                });
+              }
             }
           }
         }

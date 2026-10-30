@@ -2881,3 +2881,177 @@ a:focus-visible {
 .xp-paint-stage.transparent-grid canvas {
   background: transparent !important;
 }
+
+/* Stage 6: Authentic Windows XP Notepad */
+.xp-notepad {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  background: #ffffff;
+  font-family: Tahoma, "Segoe UI", sans-serif;
+  user-select: none;
+}
+.notepad-menubar {
+  display: flex;
+  background: #ece9d8;
+  border-bottom: 1px solid #d4cfbe;
+  padding: 2px 4px;
+  font-size: 11px;
+}
+.notepad-menu-item {
+  position: relative;
+}
+.notepad-menu-btn {
+  background: none;
+  border: 1px solid transparent;
+  padding: 2px 6px;
+  font-size: 11px;
+  font-family: inherit;
+  color: #000;
+  cursor: pointer;
+}
+.notepad-menu-btn:hover,
+.notepad-menu-item.open .notepad-menu-btn {
+  background: #316ac5;
+  color: #fff;
+  border-color: #316ac5;
+}
+.notepad-dropdown {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  min-width: 150px;
+  background: #ffffff;
+  border: 1px solid #aca899;
+  box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+  z-index: 500;
+  padding: 2px;
+}
+.notepad-menu-item.open .notepad-dropdown {
+  display: flex;
+  flex-direction: column;
+}
+.notepad-dropdown button {
+  background: none;
+  border: none;
+  text-align: left;
+  padding: 4px 12px;
+  font-size: 11px;
+  font-family: inherit;
+  cursor: pointer;
+}
+.notepad-dropdown button:hover {
+  background: #316ac5;
+  color: #fff;
+}
+.notepad-dropdown hr {
+  margin: 2px 0;
+  border: none;
+  border-top: 1px solid #d4cfbe;
+}
+.notepad-editor-wrap {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+}
+.notepad-textarea {
+  width: 100%;
+  height: 100%;
+  border: none;
+  outline: none;
+  resize: none;
+  padding: 6px;
+  font-family: "Lucida Console", "Courier New", monospace;
+  font-size: 12px;
+  line-height: 1.4;
+  color: #000;
+  background: #fff;
+  white-space: pre-wrap;
+  user-select: text;
+}
+.notepad-statusbar {
+  display: flex;
+  height: 22px;
+  background: #ece9d8;
+  border-top: 1px solid #7f9db9;
+  font-size: 11px;
+  padding: 0 4px;
+  align-items: center;
+  gap: 4px;
+}
+.notepad-status-col {
+  padding: 2px 8px;
+  border: 1px inset #fff;
+  box-shadow: inset 1px 1px #716f64, inset -1px -1px #fff;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+}
+.notepad-status-col.status-pos {
+  flex: 2;
+}
+.notepad-status-col.status-len {
+  flex: 1.5;
+}
+.notepad-status-col.status-enc {
+  width: 70px;
+}
+.notepad-status-col.status-os {
+  width: 110px;
+}
+
+/* Stage 6: PDF Redaction & Selection Box */
+.pdf-selection-box {
+  position: absolute;
+  border: 1px dashed #e60000;
+  background: rgba(230, 0, 0, 0.25);
+  pointer-events: none;
+  z-index: 100;
+}
+.pdf-annotation-layer.redacting {
+  cursor: crosshair !important;
+}
+.pdf-annotation-layer.replacing {
+  cursor: text !important;
+}
+
+/* Stage 6: Desktop OCR Modal */
+.xp-ocr-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.xp-ocr-modal-backdrop[hidden] {
+  display: none !important;
+}
+.xp-ocr-modal {
+  width: 420px;
+  background: #ece9d8;
+  border: 3px solid #0055ea;
+  border-radius: 4px 4px 0 0;
+  box-shadow: 3px 3px 12px rgba(0, 0, 0, 0.55);
+  font-family: Tahoma, "Segoe UI", sans-serif;
+  overflow: hidden;
+}
+.xp-progress-bar-wrap {
+  width: 100%;
+  height: 18px;
+  background: #fff;
+  border: 1px solid #7f9db9;
+  border-radius: 2px;
+  overflow: hidden;
+  margin-top: 8px;
+}
+.xp-progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(to bottom, #72d039 0%, #469a1b 100%);
+  width: 0%;
+  transition: width 0.2s ease;
+}

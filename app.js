@@ -10,6 +10,7 @@ import { createDesktop, cellsFrom } from "./desktop.js";
 import { createWindowManager } from "./windows.js";
 import { mountViewer, viewerType } from "./viewers.js";
 import { mountPaintWorkspace } from "./paint-workspace.js";
+import { mountNotepad } from "./notepad.js";
 import { removeColorBackground } from "./bg-remover.js";
 import { t, lang, setLanguage, applyStatic } from "./i18n.js";
 const $ = (s) => document.querySelector(s);
@@ -209,6 +210,104 @@ async function removeDesktopImageBackground(entry) {
   } catch (err) {
     notify(err.message || "Arka plan kaldırma hatası");
   }
+}
+
+function createNotepadWindow(name, initialText = "") {
+  const notepadEntry = {
+    id: "notepad-" + Date.now(),
+    name: name || "Adsız.txt",
+    ext: "txt",
+    file: new File([initialText], name || "Adsız.txt", { type: "text/plain" }),
+  };
+  const { record, created } = windowManager.open(notepadEntry, {
+    width: 620,
+    height: 480,
+  });
+  if (created) {
+    mountNotepad(
+      record.content,
+      notepadEntry,
+      {
+        save: saveEdited,
+        notify,
+        showBalloon,
+      },
+      initialText,
+    ).catch((err) => notify(err.message));
+  }
+}
+
+async function openOcrDialog(entry) {
+  const modal = $("#ocrModal");
+  $("#ocrTargetName").textContent = entry.name;
+  $("#ocrProgressBox").hidden = true;
+  modal.hidden = false;
+
+  $("#ocrClose").onclick = () => {
+    modal.hidden = true;
+  };
+  $("#btnCancelOcr").onclick = () => {
+    modal.hidden = true;
+  };
+
+  $("#btnStartOcr").onclick = async () => {
+    try {
+      const ocrLang = $("#ocrLanguage").value;
+      const format =
+        document.querySelector("input[name='ocrFormat']:checked")?.value ||
+        "notepad";
+      const progressBox = $("#ocrProgressBox");
+      const progressFill = $("#ocrProgressFill");
+      const progressLabel = $("#ocrProgressLabel");
+
+      progressBox.hidden = false;
+      progressFill.style.width = "30%";
+      progressLabel.textContent = "Belge taranıyor... %30";
+
+      if (native) {
+        progressFill.style.width = "60%";
+        progressLabel.textContent = "OCR motoru metinleri tanıyor... %60";
+
+        const jobFormat = format === "pdf" ? "pdf" : "txt";
+        await native.submit({
+          operation: "ocr.read",
+          inputs: [entry.id],
+          options: { language: ocrLang, format: jobFormat },
+        });
+
+        progressFill.style.width = "100%";
+        progressLabel.textContent = "Tamamlandı!";
+        modal.hidden = true;
+
+        if (showBalloon) {
+          showBalloon({
+            title: t("balloon_done_title") || "İşlem tamamlandı",
+            message:
+              t("ocr_done_notify", { name: entry.name }) ||
+              `✓ ${entry.name} metin tanıma işlemi tamamlandı.`,
+          });
+        }
+        notify(`✓ ${entry.name} OCR işlemi başlatıldı.`);
+      } else {
+        progressFill.style.width = "100%";
+        modal.hidden = true;
+        const fallbackText = `--- OCR: ${entry.name} ---\nMetin tanıma sonucu burada görüntülenecektir.`;
+        if (format === "notepad") {
+          createNotepadWindow(
+            entry.name.replace(/\.[^.]+$/, "") + "-ocr.txt",
+            fallbackText,
+          );
+        } else {
+          const outName = entry.name.replace(/\.[^.]+$/, "") + "-ocr.txt";
+          await saveEdited(new Blob([fallbackText], { type: "text/plain" }), outName);
+          notify(`✓ ${outName} kaydedildi.`);
+        }
+      }
+    } catch (err) {
+      modal.hidden = true;
+      notify(err.message || "OCR hatası");
+    }
+  };
 }
 const nativeUI = native
   ? createNativeUI({
@@ -413,6 +512,22 @@ function menu(x, y) {
         "image-rembg",
       );
     }
+  }
+  if (
+    list.length === 1 &&
+    (list[0].image ||
+      list[0].isImage ||
+      list[0].previewImage ||
+      (list[0].name && list[0].name.toLowerCase().endsWith(".pdf")))
+  ) {
+    add(
+      t("menu_ocr") || "🔍 Metni Tanı (OCR)",
+      () => openOcrDialog(list[0]),
+      false,
+      "ocr-read",
+    );
+  }
+  if (allImages) {
     add(
       t("menu_convert_quality"),
       () => openOperation("convert"),

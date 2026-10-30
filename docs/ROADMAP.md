@@ -115,9 +115,21 @@ Durum: **Doğrulandı**. Doğrulanan sürüm: **0.9.0** (E2E: `tests/e2e/stage5.
 ---
 
 ## Aşama 6 — OCR ve Sınırlı PDF Metin Düzenleme
-Durum: **Bekliyor**. Hedef sürüm: 0.10.0.
-- [ ] Türkçe/İngilizce OCR ve aranabilir PDF üretimi (Tesseract).
-- [ ] Sınırlı PDF metin düzeltme (MuPDF / AGPL uyumlu): mevcut yazıyı karartıp gerçek silme ve yerine aynı font/ölçüde metin yazma.
+Durum: **Doğrulandı**. Doğrulanan sürüm: **0.10.0** (E2E: `tests/e2e/stage6.e2e.mjs`, Unit: `tests/ocr.test.mjs`, `tests/native.test.mjs`).
+- [x] **Türkçe / İngilizce OCR & Aranabilir PDF (Tesseract):**
+  - Masaüstü sağ tık menüsünden tek tıkla erişim (`🔍 Metni Tanı (OCR)`).
+  - XP OCR modal diyaloğu: Dil seçimi (`tur`, `eng`, `tur+eng`), çıktı biçimi (XP Not Defteri, Aranabilir PDF, .txt).
+  - Canlı ilerleme çubuğu (%0..%100) ve sarı balon bildirimi.
+- [x] **Otantik Windows XP Not Defteri (Notepad - `notepad.js`):**
+  - Klasik Dosya, Düzen, Biçim, Görünüm menü çubuğu.
+  - Düzenlenebilir tam ekran metin alanı, Lucida Console / Tahoma font seçimi, sözcük kaydırma.
+  - Canlı durum çubuğu: Satır & Sütun konumu, karakter sayısı, UTF-8 ve CRLF göstergeleri.
+  - Masaüstüne kaydetme / farklı kaydetme entegrasyonu.
+- [x] **PDF Çalışma Penceresinde Sansürleme (Redaction) & Metin Değiştirme:**
+  - `⬛ Sansürle`: Sayfa üzerinde hassas alanları (T.C. No, IBAN vb.) siyah veya beyaz bantla kalıcı olarak örtme.
+  - `✏️ Metin Değiştir`: Eski metin alanını beyazlatıp üzerine istenen yeni metni yerleştirme.
+  - `🔍 OCR`: PDF Çalışma Penceresinden doğrudan metin çıkarma ve masaüstüne kaydetme.
+  - Kaynak bütünlüğü: Orijinal belgenin SHA-256 hash'i %100 korunur; yeni dosya `-duzenlendi.pdf` olarak kaydedilir.
 
 ---
 

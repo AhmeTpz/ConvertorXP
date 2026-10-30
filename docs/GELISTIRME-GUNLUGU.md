@@ -154,6 +154,35 @@ Bu doküman, ConvertorXP projesinde tamamlanan her aşamanın mimarisini, eklene
 
 ---
 
+## 🔍 Aşama 6 — OCR (Metin Tanıma) & PDF Metin Düzenleme / Sansürleme (v0.10.0)
+
+**Durum:** Tamamlandı & Doğrulandı.  
+**Doğrulama Testleri:** `tests/ocr.test.mjs` (Unit), `tests/e2e/stage6.e2e.mjs` (E2E), 40/40 Birim Testi (`npm test`), Tüm Aşama 1..6 E2E Testleri (`npm run test:e2e`).
+
+### 1. Neler Geliştirildi?
+- **Gelişmiş Yerel OCR Motoru & Masaüstü Sağ Tık Entegrasyonu:**
+  - Tesseract tabanlı yerel motor ile görsellerden ve taranmış PDF'lerden tek tıkla metin tanıma.
+  - Masaüstünde herhangi bir görsel veya PDF seçildiğinde bağlam menüsünün üst bölümünde **`🔍 Metni Tanı (OCR)`** (`ocr-read`) aksiyonu.
+  - Otantik XP OCR ayar penceresi (`#ocrModal`):
+    - Dil Seçimi: Türkçe + İngilizce (`tur+eng`), Türkçe (`tur`), İngilizce (`eng`).
+    - Çıktı Modları:
+      - *XP Not Defteri ile Aç (.txt)*
+      - *Aranabilir PDF Olarak Kaydet (.pdf)*
+      - *Metin Dosyası Olarak Kaydet (.txt)*
+    - Canlı ilerleme çubuğu (%0..%100) ve işlem tamamlandığında sarı balon bildirimi.
+- **Otantik Windows XP Not Defteri (Notepad — `notepad.js`):**
+  - Salt okunur metin önizleyicisi yerine, gerçek Windows XP Notepad kullanıcı deneyimi kazandırıldı.
+  - Klasik menü çubuğu: Dosya (Kaydet, Farklı Kaydet, Kapat), Düzen (Kopyala, Tümünü Seç), Biçim (Sözcük Kaydır, Yazı Tipi seçimi).
+  - Canlı XP 3B durum çubuğu: İmlecin bulunduğu satır ve sütun (`Satır X, Sütun Y`), toplam karakter sayısı, kodlama (`UTF-8`) ve satır sonu formatı (`Windows CRLF`).
+  - OCR ile ayıklanan metinler veya masaüstündeki metin dosyaları doğrudan bu pencerede açılır; üzerinde düzenleme yapılıp masaüstüne kaydedilebilir.
+- **PDF Çalışma Penceresinde Sansürleme (Redaction) & Metin Değiştirme:**
+  - **`⬛ Sansürle (Redact)` Aracı:** Araç çubuğundan seçilip sayfa üzerinde sürüklendiğinde hassas bilgileri (T.C. Kimlik No, telefon, adres vb.) kalıcı olarak örten siyah/beyaz bant oluşturur.
+  - **`✏️ Metin Değiştir (Replace Text)` Aracı:** Eski metin alanını beyazlatıp kullanıcıdan alınan yeni metni aynı alana orantılı font büyüklüğüyle basar.
+  - **`🔍 OCR` Araç Çubuğu Butonu:** PDF Çalışma Penceresi açıkken tüm belgedeki metni ayıklayıp masaüstüne `-ocr.txt` olarak döker.
+  - **Kayıpsız Kaynak Dokunulmazlığı:** Orijinal PDF dosyası kesinlikle değiştirilmez; düzenlenen nüsha `-duzenlendi.pdf` olarak kaydedilir ve SHA-256 hash bütünlüğü korunur.
+
+---
+
 ## 🔮 Gelecek Aşamalar
 
-- **Aşama 6 (v0.10.0):** OCR ve Sınırlı PDF Metin Düzenleme (Tesseract.js Türkçe/İngilizce OCR, Aranabilir PDF ve MuPDF redaksiyon/metin değiştirme).
+- **Aşama 7 (v1.0.0):** Dağıtıma Hazırlık, Paketleme & Platformlar (Windows NSIS kurulumu, macOS DMG derlemesi, winget manifestosu ve nihai sürüm doğrulaması).

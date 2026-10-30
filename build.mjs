@@ -19,6 +19,7 @@ for (const file of [
   "paint-workspace.js",
   "collage-engine.js",
   "bg-remover.js",
+  "notepad.js",
 ])
   await copyFile(file, `dist/${file}`);
 console.log("Static build ready: dist/");

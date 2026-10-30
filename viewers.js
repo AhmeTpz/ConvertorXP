@@ -2,6 +2,7 @@ import { isOffice } from "./shared/pdf-layout.js";
 import { mountPdfWorkspace } from "./pdf-workspace.js";
 import { mountPaintWorkspace } from "./paint-workspace.js";
 import { mountEditor } from "./editor.js";
+import { mountNotepad } from "./notepad.js";
 export function viewerType(file) {
   const ext = file.name.split(".").pop().toLowerCase();
   if (
@@ -74,6 +75,10 @@ export async function mountViewer(record, entry, services) {
     return;
   }
   const kind = entry.viewer || viewerType(entry.file);
+  if (kind === "text") {
+    await mountNotepad(host, entry, services);
+    return;
+  }
   const pane = document.createElement("div");
   pane.className = "file-viewer";
   host.append(pane);
