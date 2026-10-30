@@ -91,8 +91,36 @@ try {
   // Click Save Copy (Kopya Kaydet)
   const quickSave = page.locator("#btnQuickSave");
   await quickSave.click();
+
+  // Verify Save As modal opens with format choice and calculated size
+  const saveModal = page.locator("#saveModal");
+  await saveModal.waitFor({ state: "visible" });
+  const calcSize = page.locator("#saveCalculatedSize");
+  await page.waitForTimeout(400);
+  const sizeText = (await calcSize.textContent()).trim();
+  assert.ok(
+    sizeText.length > 0 && sizeText !== "—",
+    "Calculated file size must be visible",
+  );
+  console.log(`PASS Save As modal opened with calculated size: ${sizeText}`);
+
+  // Test format dropdown choice (e.g. jpeg) and verify quality slider appears
+  await page.selectOption("#saveFormat", "jpeg");
+  await page.waitForTimeout(300);
+  const qualityRow = page.locator("#qualityRow");
+  assert.equal(
+    await qualityRow.isVisible(),
+    true,
+    "Quality slider visible for JPEG format",
+  );
+
+  // Confirm save
+  const confirmSave = page.locator("#btnConfirmSave");
+  await confirmSave.click();
   await page.waitForTimeout(500);
-  console.log("PASS Paint edit completed and Save Copy invoked");
+  console.log(
+    "PASS Paint edit completed and Save Copy invoked with chosen format",
+  );
 
   // Close Paint window
   const closeWindowBtn = page.locator(".window-close").first();
@@ -133,6 +161,9 @@ try {
 
   // Save collage copy
   await page.locator("#btnQuickSave").click();
+  const confirmCollageSave = page.locator("#btnConfirmSave");
+  await confirmCollageSave.waitFor({ state: "visible" });
+  await confirmCollageSave.click();
   await page.waitForTimeout(500);
   console.log("PASS Collage copy saved successfully");
 

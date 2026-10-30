@@ -315,6 +315,14 @@ function menu(x, y) {
     positionMenu(m, x, y);
     return;
   }
+  if (list.length >= 2 && list.every((e) => e.image || e.isImage)) {
+    add(
+      t("menu_collage") || "🖼 Kolaj Oluştur",
+      () => createCollageWindow(list),
+      false,
+      "collage-create",
+    );
+  }
   add(t("menu_open"), () => openFiles(list.map((e) => e.id)));
   if (!native && list.every(isOffice))
     add(t("menu_pdf_convert_web"), () =>
@@ -334,13 +342,6 @@ function menu(x, y) {
         () => nativeUI.convertPDF(),
         false,
         "pdf-create",
-      );
-    if (list.length >= 2 && list.every((e) => e.image || e.isImage))
-      add(
-        t("menu_collage") || "🖼 Kolaj Oluştur",
-        () => createCollageWindow(list),
-        false,
-        "collage-create",
       );
     if (list.every((e) => e.image))
       add(t("menu_edit"), () => openFiles(list.map((e) => e.id)));

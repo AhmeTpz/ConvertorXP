@@ -2733,3 +2733,143 @@ a:focus-visible {
   font-size: 11px;
   color: #000000;
 }
+.status-cell {
+  padding: 0 6px;
+  border-right: 1px solid #d4cfbe;
+  white-space: nowrap;
+}
+.status-filesize {
+  font-weight: bold;
+  color: #0055ea;
+  border-right: 0;
+}
+
+/* XP Save As Modal Dialog inside Paint Studio */
+.xp-paint-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 250;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.xp-paint-modal-backdrop[hidden] {
+  display: none !important;
+}
+.xp-paint-modal {
+  width: 390px;
+  background: #ece9d8;
+  border: 3px solid #0055ea;
+  border-radius: 4px 4px 0 0;
+  box-shadow: 3px 3px 12px rgba(0, 0, 0, 0.55);
+  font-family: Tahoma, "Segoe UI", sans-serif;
+  overflow: hidden;
+}
+.modal-titlebar {
+  background: linear-gradient(
+    to bottom,
+    #0058ee 0%,
+    #3593ff 4%,
+    #288eff 18%,
+    #1268ee 80%,
+    #0045d6 100%
+  );
+  color: #ffffff;
+  padding: 4px 8px;
+  font-weight: bold;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.6);
+}
+.modal-close {
+  background: #d63301;
+  border: 1px solid #ffffff;
+  color: #ffffff;
+  width: 18px;
+  height: 18px;
+  border-radius: 3px;
+  font-weight: bold;
+  line-height: 14px;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.modal-close:hover {
+  background: #ff5533;
+}
+.modal-body {
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.modal-field {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+}
+.modal-field label {
+  width: 85px;
+  font-weight: bold;
+  color: #000;
+}
+.modal-field input[type="text"],
+.modal-field select {
+  flex: 1;
+  font-family: Tahoma, sans-serif;
+  font-size: 11px;
+  padding: 3px 6px;
+  border: 1px solid #7f9db9;
+  background: #ffffff;
+}
+.quality-wrap {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.quality-wrap input[type="range"] {
+  flex: 1;
+}
+.quality-wrap output {
+  min-width: 32px;
+  font-size: 11px;
+  font-weight: bold;
+}
+.modal-size-box {
+  background: #fdfae3;
+  border: 1px solid #e2cb83;
+  border-radius: 3px;
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 11px;
+}
+.modal-size-box .size-icon {
+  font-size: 20px;
+}
+.modal-size-box strong {
+  display: block;
+  color: #554400;
+  margin-bottom: 2px;
+}
+.modal-size-box span {
+  font-size: 13px;
+  font-weight: bold;
+  color: #0055ea;
+}
+.modal-footer {
+  background: #e4e0cd;
+  border-top: 1px solid #d4cfbe;
+  padding: 8px 16px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}

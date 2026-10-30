@@ -249,8 +249,51 @@ export async function mountPaintWorkspace(
           <span class="status-cell status-help">Çizim yapmak veya şekil yerleştirmek için fareyi sürükleyin.</span>
           <span class="status-cell status-coords" id="statusCoords">0, 0 px</span>
           <span class="status-cell status-size" id="statusSize">${canvasW} × ${canvasH} px</span>
+          <span class="status-cell status-filesize" id="statusFileSize" title="Tahmini Dosya Boyutu">...</span>
         </div>
       </footer>
+
+      <!-- XP Save As Modal Dialog -->
+      <div class="xp-paint-modal-backdrop" id="saveModal" hidden>
+        <div class="xp-paint-modal">
+          <div class="modal-titlebar">
+            <span>💾 ${t("paint_save_copy") || "Kopya Olarak Kaydet"}</span>
+            <button type="button" class="modal-close" id="modalClose" aria-label="Kapat">×</button>
+          </div>
+          <div class="modal-body">
+            <div class="modal-field">
+              <label for="saveFilename">Dosya Adı:</label>
+              <input type="text" id="saveFilename" class="xp-input" value="resim-duzenlendi">
+            </div>
+            <div class="modal-field">
+              <label for="saveFormat">Kayıt Türü:</label>
+              <select id="saveFormat" class="xp-select">
+                <option value="png" selected>PNG (*.png) — Kayıpsız netlik & şeffaflık</option>
+                <option value="jpeg">JPEG (*.jpg) — Optimize dosya boyutu</option>
+                <option value="webp">WebP (*.webp) — Modern web formatı</option>
+              </select>
+            </div>
+            <div class="modal-field" id="qualityRow" hidden>
+              <label for="saveQuality">Kalite:</label>
+              <div class="quality-wrap">
+                <input type="range" id="saveQuality" min="40" max="100" value="92">
+                <output id="saveQualityVal">92%</output>
+              </div>
+            </div>
+            <div class="modal-size-box" id="saveSizeBox">
+              <span class="size-icon">📁</span>
+              <div>
+                <strong>Tahmini Dosya Boyutu:</strong>
+                <span id="saveCalculatedSize">Hesaplanıyor…</span>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="xp-button primary" id="btnConfirmSave">💾 Kaydet</button>
+            <button type="button" class="xp-button" id="btnCancelSave">Vazgeç</button>
+          </div>
+        </div>
+      </div>
     </div>
   `;
 
@@ -677,13 +720,97 @@ export async function mountPaintWorkspace(
     });
   });
 
-  // 9. Save As / Kopya Olarak Kaydet
+  // 9. Save As / Farklı Kaydet Modalı & Kopya Kaydet
+  const saveModal = q("#saveModal");
+  const saveFilename = q("#saveFilename");
+  const saveFormat = q("#saveFormat");
+  const saveQuality = q("#saveQuality");
+  const saveQualityVal = q("#saveQualityVal");
+  const qualityRow = q("#qualityRow");
+  const saveCalculatedSize = q("#saveCalculatedSize");
+  const statusFileSize = q("#statusFileSize");
+
+  async function updateCalculatedSize() {
+    try {
+      const format = saveFormat.value;
+      const mime =
+        format === "png"
+          ? "image/png"
+          : format === "jpeg"
+            ? "image/jpeg"
+            : "image/webp";
+      const quality = Number(saveQuality.value) / 100;
+      const blob = await new Promise((res) =>
+        canvas.toBlob(res, mime, quality),
+      );
+      if (!blob) return;
+      const kb =
+        blob.size < 1048576
+          ? `${(blob.size / 1024).toFixed(1)} KB`
+          : `${(blob.size / 1048576).toFixed(2)} MB`;
+      if (saveCalculatedSize) saveCalculatedSize.textContent = kb;
+      if (statusFileSize) statusFileSize.textContent = `💾 ~ ${kb}`;
+      return { blob, kb };
+    } catch {
+      if (saveCalculatedSize) saveCalculatedSize.textContent = "—";
+    }
+  }
+
+  function openSaveDialog() {
+    const baseName = (
+      entry?.name || (mode === "collage" ? "kolaj" : "resim")
+    ).replace(/\.[^.]+$/, "");
+    const suffix = mode === "collage" ? "-kolaj" : "-duzenlendi";
+    saveFilename.value = `${baseName}${suffix}`;
+    qualityRow.hidden = saveFormat.value === "png";
+    saveModal.hidden = false;
+    updateCalculatedSize();
+    saveFilename.focus();
+    saveFilename.select();
+  }
+
+  saveFormat.onchange = () => {
+    qualityRow.hidden = saveFormat.value === "png";
+    updateCalculatedSize();
+  };
+
+  saveQuality.oninput = () => {
+    saveQualityVal.textContent = `${saveQuality.value}%`;
+    updateCalculatedSize();
+  };
+
+  q("#modalClose").onclick = () => {
+    saveModal.hidden = true;
+  };
+  q("#btnCancelSave").onclick = () => {
+    saveModal.hidden = true;
+  };
+
   async function performSave() {
     try {
-      const blob = await new Promise((res) => canvas.toBlob(res, "image/png"));
-      const baseName = (entry?.name || "kolaj").replace(/\.[^.]+$/, "");
-      const ext = mode === "collage" ? "kolaj.png" : "duzenlendi.png";
-      const outName = `${baseName}-${ext}`;
+      const format = saveFormat.value;
+      const ext = format === "jpeg" ? "jpg" : format;
+      const mime =
+        format === "png"
+          ? "image/png"
+          : format === "jpeg"
+            ? "image/jpeg"
+            : "image/webp";
+      const quality = Number(saveQuality.value) / 100;
+      const blob = await new Promise((res) =>
+        canvas.toBlob(res, mime, quality),
+      );
+      if (!blob) throw new Error("Görsel oluşturulamadı");
+
+      let stem = saveFilename.value.trim().replace(/\.[^.]+$/, "");
+      if (!stem) stem = mode === "collage" ? "kolaj" : "resim-duzenlendi";
+      const outName = `${stem}.${ext}`;
+      const kb =
+        blob.size < 1048576
+          ? `${(blob.size / 1024).toFixed(1)} KB`
+          : `${(blob.size / 1048576).toFixed(2)} MB`;
+
+      saveModal.hidden = true;
 
       if (window.convertorDesktop?.saveBlob) {
         const bytes = new Uint8Array(await blob.arrayBuffer());
@@ -691,20 +818,23 @@ export async function mountPaintWorkspace(
         if (services.showBalloon) {
           services.showBalloon({
             title: t("balloon_done_title") || "İşlem tamamlandı",
-            message: `✓ ${outName} masaüstüne kaydedildi.`,
+            message: `✓ ${outName} (${kb}) masaüstüne kaydedildi.`,
           });
         }
-        notify(`✓ ${outName} masaüstüne kaydedildi.`);
+        notify(`✓ ${outName} (${kb}) masaüstüne kaydedildi.`);
       } else if (save) {
         await save(blob, outName, canvas.width, canvas.height);
+        notify(`✓ ${outName} (${kb}) indirildi.`);
       }
     } catch (e) {
       notify(e.message || "Kaydetme hatası");
     }
   }
 
-  q("#btnQuickSave").onclick = performSave;
-  q("[data-menu='save']").onclick = performSave;
+  q("#btnConfirmSave").onclick = performSave;
+  q("#btnQuickSave").onclick = openSaveDialog;
+  q("[data-menu='save']").onclick = openSaveDialog;
+  setTimeout(updateCalculatedSize, 350);
 
   // Keyboard Shortcuts (Ctrl+Z, Ctrl+Y, Ctrl+S)
   window.addEventListener("keydown", (ev) => {
