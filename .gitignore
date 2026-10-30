@@ -1,0 +1,8 @@
+dist/
+node_modules/
+.vercel/
+release/
+resources/downloads/
+resources/build-packs/
+resources/engines/
+.cxp-*/

@@ -1,0 +1,253 @@
+[
+  {
+    "name": "@napi-rs/canvas",
+    "version": "1.0.13",
+    "license": "MIT",
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/Brooooooklyn/canvas.git"
+    }
+  },
+  {
+    "name": "@napi-rs/canvas-win32-x64-msvc",
+    "version": "1.0.13",
+    "license": "MIT",
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/Brooooooklyn/canvas.git"
+    }
+  },
+  {
+    "name": "@pdf-lib/fontkit",
+    "version": "1.1.1",
+    "license": "MIT",
+    "repository": {
+      "type": "git",
+      "url": "git://github.com/Hopding/fontkit.git"
+    }
+  },
+  {
+    "name": "pako",
+    "version": "1.0.11",
+    "license": "(MIT AND Zlib)",
+    "repository": "nodeca/pako"
+  },
+  {
+    "name": "@resvg/resvg-js",
+    "version": "2.6.2",
+    "license": "MPL-2.0",
+    "repository": "git@github.com:yisibl/resvg-js.git"
+  },
+  {
+    "name": "@resvg/resvg-js-win32-x64-msvc",
+    "version": "2.6.2",
+    "license": "MPL-2.0",
+    "repository": "git@github.com:yisibl/resvg-js.git"
+  },
+  {
+    "name": "7zip-bin",
+    "version": "5.2.0",
+    "license": "MIT",
+    "repository": "develar/7zip-bin"
+  },
+  {
+    "name": "csv-parse",
+    "version": "7.0.3",
+    "license": "MIT",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/adaltas/node-csv.git",
+      "directory": "packages/csv-parse"
+    }
+  },
+  {
+    "name": "csv-stringify",
+    "version": "6.9.0",
+    "license": "MIT",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/adaltas/node-csv.git",
+      "directory": "packages/csv-stringify"
+    }
+  },
+  {
+    "name": "iconv-lite",
+    "version": "0.7.3",
+    "license": "MIT",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/pillarjs/iconv-lite.git"
+    }
+  },
+  {
+    "name": "safer-buffer",
+    "version": "2.1.2",
+    "license": "MIT",
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/ChALkeR/safer-buffer.git"
+    }
+  },
+  {
+    "name": "pdf-lib",
+    "version": "1.17.1",
+    "license": "MIT",
+    "repository": "git+https://github.com/Hopding/pdf-lib.git"
+  },
+  {
+    "name": "@pdf-lib/standard-fonts",
+    "version": "1.0.0",
+    "license": "MIT",
+    "repository": "https://github.com/Hopding/standard-fonts.git"
+  },
+  {
+    "name": "@pdf-lib/upng",
+    "version": "1.0.1",
+    "license": "MIT",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/Hopding/upng"
+    }
+  },
+  {
+    "name": "tslib",
+    "version": "1.14.1",
+    "license": "0BSD",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/Microsoft/tslib.git"
+    }
+  },
+  {
+    "name": "pdfjs-dist",
+    "version": "6.4.299",
+    "license": "Apache-2.0",
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/mozilla/pdf.js.git"
+    }
+  },
+  {
+    "name": "tesseract.js",
+    "version": "7.0.0",
+    "license": "Apache-2.0",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/naptha/tesseract.js.git"
+    }
+  },
+  {
+    "name": "bmp-js",
+    "version": "0.1.0",
+    "license": "MIT",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/shaozilee/bmp-js"
+    }
+  },
+  {
+    "name": "idb-keyval",
+    "version": "6.3.0",
+    "license": "Apache-2.0",
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/jakearchibald/idb-keyval.git"
+    }
+  },
+  {
+    "name": "is-url",
+    "version": "1.2.4",
+    "license": "MIT",
+    "repository": "https://github.com/segmentio/is-url"
+  },
+  {
+    "name": "node-fetch",
+    "version": "2.7.0",
+    "license": "MIT",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/bitinn/node-fetch.git"
+    }
+  },
+  {
+    "name": "whatwg-url",
+    "version": "5.0.0",
+    "license": "MIT",
+    "repository": "jsdom/whatwg-url"
+  },
+  {
+    "name": "tr46",
+    "version": "0.0.3",
+    "license": "MIT",
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/Sebmaster/tr46.js.git"
+    }
+  },
+  {
+    "name": "webidl-conversions",
+    "version": "3.0.1",
+    "license": "BSD-2-Clause",
+    "repository": "jsdom/webidl-conversions"
+  },
+  {
+    "name": "opencollective-postinstall",
+    "version": "2.0.3",
+    "license": "MIT",
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/opencollective/opencollective-postinstall.git"
+    }
+  },
+  {
+    "name": "regenerator-runtime",
+    "version": "0.13.11",
+    "license": "MIT",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/facebook/regenerator/tree/main/packages/runtime"
+    }
+  },
+  {
+    "name": "tesseract.js-core",
+    "version": "7.0.0",
+    "license": "Apache-2.0",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/naptha/tesseract.js-core.git"
+    }
+  },
+  {
+    "name": "wasm-feature-detect",
+    "version": "1.9.0",
+    "license": "Apache-2.0",
+    "repository": "GoogleChromeLabs/wasm-feature-detect"
+  },
+  {
+    "name": "zlibjs",
+    "version": "0.3.1",
+    "license": "MIT",
+    "repository": {
+      "type": "git",
+      "url": "git://github.com/imaya/zlib.js.git"
+    }
+  },
+  {
+    "name": "yauzl",
+    "version": "3.4.0",
+    "license": "MIT",
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/thejoshwolfe/yauzl.git"
+    }
+  },
+  {
+    "name": "pend",
+    "version": "1.2.0",
+    "license": "MIT",
+    "repository": {
+      "type": "git",
+      "url": "git://github.com/andrewrk/node-pend.git"
+    }
+  }
+]

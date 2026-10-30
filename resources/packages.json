@@ -1,0 +1,103 @@
+{
+  "schema": 1,
+  "platform": "win32",
+  "arch": "x64",
+  "packages": [
+    {
+      "id": "image",
+      "label": "Görsel motoru",
+      "version": "7.1.2-34",
+      "url": "https://github.com/ImageMagick/ImageMagick/releases/download/7.1.2-34/ImageMagick-7.1.2-34-portable-Q16-x64.7z",
+      "sha256": "52cc6a441c7884f5ff4274b410c9b90c4b7d54245dcdf4d32988bb4e4df4e5d1",
+      "size": 12022003,
+      "archive": "7z",
+      "entry": "magick.exe",
+      "license": "ImageMagick",
+      "source": "https://github.com/ImageMagick/ImageMagick/releases/tag/7.1.2-34",
+      "bundled": true,
+      "installedSize": 258566573
+    },
+    {
+      "id": "qpdf",
+      "label": "PDF doğrulama",
+      "version": "v12.4.2",
+      "url": "https://github.com/qpdf/qpdf/releases/download/v12.4.2/qpdf-12.4.2-msvc64.zip",
+      "sha256": "db87077e683630c1217e0e8f9a20a9749d952ab676e881c3689187763a5de25d",
+      "size": 28183147,
+      "archive": "zip",
+      "entry": "qpdf.exe",
+      "license": "Apache-2.0",
+      "source": "https://github.com/qpdf/qpdf/releases/tag/v12.4.2",
+      "bundled": true,
+      "installedSize": 87350380
+    },
+    {
+      "id": "media",
+      "label": "Ses / video",
+      "version": "9.0.2",
+      "url": "https://github.com/GyanD/codexffmpeg/releases/download/9.0.2/ffmpeg-9.0.2-essentials_build.zip",
+      "sha256": "60f467265b1e312373dbcd92200c2618a74850f98d3d078e94296bb3fa2047ba",
+      "size": 114768076,
+      "archive": "zip",
+      "entry": "ffmpeg.exe",
+      "license": "GPL-3.0-or-later",
+      "source": "https://github.com/GyanD/codexffmpeg/releases/tag/9.0.2",
+      "bundled": false,
+      "installedSize": 329221735
+    },
+    {
+      "id": "office",
+      "label": "Office dönüşümleri",
+      "version": "26.8.1",
+      "url": "https://download.documentfoundation.org/libreoffice/stable/26.8.1/win/x86_64/LibreOffice_26.8.1_Win_x86-64.msi",
+      "size": 374870016,
+      "sha256": "c6298b10cfa1748bcbedad94c62ce771e240e5021bfd6d7a967cd571b04b5312",
+      "archive": "msi",
+      "entry": "soffice.exe",
+      "license": "MPL-2.0 / LGPL-3.0-or-later",
+      "source": "https://www.libreoffice.org/about-us/licenses",
+      "bundled": false,
+      "installedSize": 1597613793
+    },
+    {
+      "id": "archive",
+      "label": "Arşiv araçları",
+      "version": "26.05",
+      "url": "https://github.com/ip7z/7zip/releases/download/26.05/7z2605-x64.exe",
+      "size": 1663506,
+      "sha256": "fd99e86f57d8f429ef5ed045bf98315af962e2309b0f1ba87a147a44c71647d0",
+      "archive": "exe",
+      "entry": "7z.exe",
+      "license": "LGPL-2.1-or-later + unRAR restriction",
+      "source": "https://github.com/ip7z/7zip/releases/tag/26.05",
+      "bundled": false,
+      "installedSize": 5921270
+    },
+    {
+      "id": "ocr",
+      "label": "Türkçe / İngilizce OCR",
+      "version": "4.0.0_best_int",
+      "files": [
+        {
+          "name": "eng.traineddata.gz",
+          "url": "https://cdn.jsdelivr.net/npm/@tesseract.js-data/eng/4.0.0_best_int/eng.traineddata.gz",
+          "size": 2952873,
+          "sha256": "45b4cb346724ac1774f1c36f42f182b887bcdb28ebe63e6fff90ac41f3fcff91"
+        },
+        {
+          "name": "tur.traineddata.gz",
+          "url": "https://cdn.jsdelivr.net/npm/@tesseract.js-data/tur/4.0.0_best_int/tur.traineddata.gz",
+          "size": 2141291,
+          "sha256": "384ba0dc28040451b7818d7d60e0a88df0d3003fa5a01d713a468779bc3d8c04"
+        }
+      ],
+      "size": 5094164,
+      "archive": "files",
+      "entry": "eng.traineddata.gz",
+      "license": "Apache-2.0",
+      "source": "https://github.com/naptha/tessdata",
+      "bundled": false,
+      "installedSize": 5094164
+    }
+  ]
+}

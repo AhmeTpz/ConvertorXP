@@ -1,0 +1,266 @@
+{
+  "date": "2026-10-29T15:28:06.325Z",
+  "results": [
+    {
+      "id": "image.convert",
+      "options": {
+        "format": "png"
+      },
+      "status": "passed",
+      "outputs": 1
+    },
+    {
+      "id": "image.convert",
+      "options": {
+        "format": "jpg"
+      },
+      "status": "passed",
+      "outputs": 1
+    },
+    {
+      "id": "image.convert",
+      "options": {
+        "format": "webp"
+      },
+      "status": "passed",
+      "outputs": 1
+    },
+    {
+      "id": "image.convert",
+      "options": {
+        "format": "tiff"
+      },
+      "status": "passed",
+      "outputs": 1
+    },
+    {
+      "id": "image.convert",
+      "options": {
+        "format": "bmp"
+      },
+      "status": "passed",
+      "outputs": 1
+    },
+    {
+      "id": "image.convert",
+      "options": {
+        "format": "gif"
+      },
+      "status": "passed",
+      "outputs": 1
+    },
+    {
+      "id": "image.convert",
+      "options": {
+        "format": "ico"
+      },
+      "status": "passed",
+      "outputs": 1
+    },
+    {
+      "id": "image.convert",
+      "options": {
+        "format": "avif"
+      },
+      "status": "passed",
+      "outputs": 1
+    },
+    {
+      "id": "image.resize",
+      "options": {},
+      "status": "passed",
+      "outputs": 1
+    },
+    {
+      "id": "image.crop",
+      "options": {
+        "width": 100,
+        "height": 100
+      },
+      "status": "passed",
+      "outputs": 1
+    },
+    {
+      "id": "image.flip",
+      "options": {},
+      "status": "passed",
+      "outputs": 1
+    },
+    {
+      "id": "image.color",
+      "options": {},
+      "status": "passed",
+      "outputs": 1
+    },
+    {
+      "id": "image.watermark",
+      "options": {},
+      "status": "passed",
+      "outputs": 1
+    },
+    {
+      "id": "image.border",
+      "options": {},
+      "status": "passed",
+      "outputs": 1
+    },
+    {
+      "id": "image.strip",
+      "options": {},
+      "status": "passed",
+      "outputs": 1
+    },
+    {
+      "id": "image.metadata",
+      "options": {},
+      "status": "passed",
+      "outputs": 1
+    },
+    {
+      "id": "image.compress",
+      "options": {},
+      "status": "passed",
+      "outputs": 1
+    },
+    {
+      "id": "image.merge",
+      "options": {},
+      "status": "passed",
+      "outputs": 1
+    },
+    {
+      "id": "image.animate",
+      "options": {},
+      "status": "passed",
+      "outputs": 1
+    },
+    {
+      "id": "image.frames",
+      "options": {},
+      "status": "passed",
+      "outputs": 2
+    },
+    {
+      "id": "pdf.create",
+      "options": {},
+      "status": "passed",
+      "outputs": 1
+    },
+    {
+      "id": "pdf.extract",
+      "options": {
+        "pages": "1"
+      },
+      "status": "passed",
+      "outputs": 1
+    },
+    {
+      "id": "pdf.delete",
+      "options": {
+        "pages": "1"
+      },
+      "status": "passed",
+      "outputs": 1
+    },
+    {
+      "id": "pdf.rotate",
+      "options": {
+        "pages": "1"
+      },
+      "status": "passed",
+      "outputs": 1
+    },
+    {
+      "id": "pdf.number",
+      "options": {
+        "pages": "1"
+      },
+      "status": "passed",
+      "outputs": 1
+    },
+    {
+      "id": "pdf.forms",
+      "options": {
+        "values": "{\"name\":\"Çağrı\"}"
+      },
+      "status": "passed",
+      "outputs": 1
+    },
+    {
+      "id": "media.resize",
+      "options": {},
+      "status": "passed",
+      "outputs": 1
+    },
+    {
+      "id": "media.mute",
+      "options": {},
+      "status": "passed",
+      "outputs": 1
+    },
+    {
+      "id": "media.normalize",
+      "options": {},
+      "status": "passed",
+      "outputs": 1
+    },
+    {
+      "id": "media.frame",
+      "options": {},
+      "status": "passed",
+      "outputs": 1
+    },
+    {
+      "id": "media.gif",
+      "options": {
+        "duration": 1
+      },
+      "status": "passed",
+      "outputs": 1
+    },
+    {
+      "id": "media.merge",
+      "options": {},
+      "status": "passed",
+      "outputs": 1
+    },
+    {
+      "id": "media.subtitle-add",
+      "options": {},
+      "status": "passed",
+      "outputs": 1
+    },
+    {
+      "id": "media.subtitle-extract",
+      "options": {
+        "format": "srt"
+      },
+      "status": "passed",
+      "outputs": 1
+    },
+    {
+      "id": "subtitle.convert",
+      "options": {
+        "format": "vtt"
+      },
+      "status": "passed",
+      "outputs": 1
+    },
+    {
+      "id": "text.csv",
+      "options": {
+        "format": "tsv"
+      },
+      "status": "passed",
+      "outputs": 1
+    },
+    {
+      "id": "office.sheet",
+      "options": {
+        "format": "xlsx"
+      },
+      "status": "passed",
+      "outputs": 1
+    }
+  ]
+}
